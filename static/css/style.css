@@ -587,3 +587,88 @@ h3 {
     background-color: var(--cream);
     color: var(--maroon-muted);
 }
+
+/* ==========================================================================
+   PROJECTS SECTION
+   ========================================================================== */
+.projects {
+    position: relative;
+    padding: 6rem 0;
+    min-height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow-x: hidden;
+}
+
+.projects-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    position: relative;
+}
+
+.folder-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 1500px;
+    cursor: pointer;
+    perspective: 1500px;
+    margin: 0 auto;
+}
+
+.folder-back {
+    width: 100%;
+    max-width: 1500px;
+    height: auto;
+    position: relative;
+    z-index: 1;
+    display: block;
+    filter: drop-shadow(0 15px 35px rgba(0, 0, 0, 0.2));
+}
+
+.folder-content {
+    position: absolute;
+    top: 15%;
+    left: 5%;
+    width: 90%;
+    height: 80%;
+    z-index: 2;
+    background: transparent;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease 0.3s;
+}
+
+.folder-front {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
+    z-index: 3;
+    transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s ease;
+    transform-origin: left center;
+}
+
+/* Hover hint */
+.folder-wrapper:not(.is-open):hover .folder-front {
+    transform: scale(1.02);
+}
+
+/* Open State */
+.folder-wrapper.is-open {
+    cursor: default;
+}
+
+.folder-wrapper.is-open .folder-content {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.folder-wrapper.is-open .folder-front {
+    /* Slide left */
+    transform: translateX(-120%);
+    opacity: 0;
+}

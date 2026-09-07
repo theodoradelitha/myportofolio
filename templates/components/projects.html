@@ -1,0 +1,31 @@
+{% load static %}
+<!-- PROJECTS SECTION -->
+<section class="projects" id="projects">
+    <div class="container projects-container">
+
+        <div class="folder-wrapper" id="projects-folder">
+            <!-- Back Folder -->
+            <img src="{% static 'img/blank-folder.svg' %}" alt="Projects Folder Back" class="folder-back">
+
+            <!-- Folder Content -->
+            <div class="folder-content">
+
+            </div>
+
+            <!-- Cover Folder -->
+            <img src="{% static 'img/clickable-folder.svg' %}" alt="Clickable Projects Folder" class="folder-front">
+        </div>
+
+    </div>
+</section>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const folder = document.getElementById("projects-folder");
+        if (folder) {
+            folder.addEventListener("click", function () {
+                this.classList.toggle("is-open");
+            });
+        }
+    });
+</script>
