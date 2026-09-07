@@ -672,3 +672,132 @@ h3 {
     transform: translateX(-120%);
     opacity: 0;
 }
+
+/* ==========================================================================
+   PROJECT CARDS
+   ========================================================================== */
+.project-cards-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.project-card {
+    background-color: var(--cream);
+    border-radius: 30px;
+    padding: 1.5rem 2.5rem;
+    width: 95%;
+    max-width: 1100px;
+    color: var(--maroon-main);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    margin-bottom: 2rem;
+}
+
+.project-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.stars-left,
+.stars-right {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.stars-left .star-small {
+    margin-top: 25px;
+    /* lower than big star */
+}
+
+.stars-right .star-small {
+    margin-top: 25px;
+    /* lower than big star */
+}
+
+.stars-right img {
+    transform: scaleX(-1);
+}
+
+.star-large {
+    width: 65px;
+    height: 65px;
+}
+
+.star-small {
+    width: 45px;
+    height: 45px;
+}
+
+.project-title {
+    font-family: 'Genty', sans-serif;
+    font-size: 4.5rem;
+    margin: 0;
+    line-height: 1;
+}
+
+.project-card-body {
+    display: flex;
+    gap: 2rem;
+    align-items: stretch;
+}
+
+.project-image-placeholder {
+    flex: 1.2;
+    border: 8px solid var(--maroon-main);
+    border-radius: 12px;
+    min-height: 220px;
+}
+
+.project-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.project-subtitle {
+    font-family: 'Genty', sans-serif;
+    font-size: 2rem;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.project-desc {
+    font-family: var(--font-body);
+    font-weight: 400;
+    font-size: 1.05rem;
+    line-height: 1.5;
+}
+
+.project-tech-title {
+    font-family: 'Genty', sans-serif;
+    font-size: 2rem;
+    margin: 0;
+    margin-top: 0.5rem;
+    line-height: 1.2;
+}
+
+.project-tech-list {
+    font-family: var(--font-body);
+    font-weight: 400;
+    font-size: 1.05rem;
+    list-style-type: none;
+    /* using dots from content instead or standard bullets */
+    padding-left: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.project-tech-list li::before {
+    content: "· ";
+    font-weight: bold;
+}
