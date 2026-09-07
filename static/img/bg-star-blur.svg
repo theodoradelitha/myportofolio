@@ -1,0 +1,17 @@
+<svg width="383" height="328" viewBox="0 0 383 328" fill="none" xmlns="http://www.w3.org/2000/svg">
+<title>BG Star Blur</title>
+<g filter="url(#filter0_f_7_33)">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M268.035 125.808L321.946 28L214.76 90.3073L121.26 28L140.901 133.242L28 198.872L152.079 193.138L172.022 300L232.984 189.399L355 183.761L268.035 125.808Z" fill="url(#paint0_radial_7_33)"/>
+</g>
+<defs>
+<filter id="filter0_f_7_33" x="0" y="0" width="383" height="328" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="14" result="effect1_foregroundBlur_7_33"/>
+</filter>
+<radialGradient id="paint0_radial_7_33" cx="0" cy="0" r="1" gradientTransform="matrix(-22.4296 105.778 -127.167 -26.1439 202.715 164)" gradientUnits="userSpaceOnUse">
+<stop stop-color="#4F0A11"/>
+<stop offset="1" stop-color="#260607"/>
+</radialGradient>
+</defs>
+</svg>
