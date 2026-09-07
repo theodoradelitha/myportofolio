@@ -9,44 +9,97 @@
 
             <!-- Folder Content -->
             <div class="folder-content">
-                <div class="project-cards-container">
+                <!-- Swiper -->
+                <div class="swiper projectsSwiper">
+                    <div class="swiper-wrapper">
 
-                    <!-- Single Project Card -->
-                    <div class="project-card">
-                        <div class="project-card-header">
-                            <div class="stars-left">
-                                <img src="{% static 'img/projects-star.svg' %}" alt="*" class="star-large">
-                                <img src="{% static 'img/projects-star.svg' %}" alt="*" class="star-small">
-                            </div>
-                            <h3 class="project-title">Title</h3>
-                            <div class="stars-right">
-                                <img src="{% static 'img/projects-star.svg' %}" alt="*" class="star-small">
-                                <img src="{% static 'img/projects-star.svg' %}" alt="*" class="star-large">
+                        <!-- Slide 1 -->
+                        <div class="swiper-slide">
+                            <div class="project-card">
+                                <div class="project-card-header">
+                                    <div class="stars-left">
+                                        <img src="{% static 'img/projects-star.svg' %}" alt="*" class="star-large">
+                                        <img src="{% static 'img/projects-star.svg' %}" alt="*" class="star-small">
+                                    </div>
+                                    <h3 class="project-title"><a
+                                            href="https://oh-26-it-dev-recruitment.vercel.app/ambassador"
+                                            target="_blank">OH26</a></h3>
+                                    <div class="stars-right">
+                                        <img src="{% static 'img/projects-star.svg' %}" alt="*" class="star-small">
+                                        <img src="{% static 'img/projects-star.svg' %}" alt="*" class="star-large">
+                                    </div>
+                                </div>
+
+                                <div class="project-card-body">
+                                    <div class="project-image-placeholder">
+                                        <img src="{% static 'img/oh-project.webp' %}" alt="OH26" class="project-image">
+                                    </div>
+
+                                    <div class="project-info">
+                                        <h4 class="project-subtitle">About</h4>
+                                        <p class="project-desc">Developed as an IT Dev selection assignment. I built the
+                                            recruitment landing page by efficiently composing pre-built UI components
+                                            from the design system (like the countdown timer and FAQ accordion) into a
+                                            responsive layout.</p>
+
+                                        <h4 class="project-tech-title">Tech Stack</h4>
+                                        <ul class="project-tech-list">
+                                            <li>Next.js</li>
+                                            <li>TypeScript</li>
+                                            <li>Tailwind CSS</li>
+                                        </ul>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="project-card-body">
-                            <div class="project-image-placeholder">
-                                <!-- Image put here -->
-                            </div>
+                        <!-- Slide 2 -->
+                        <div class="swiper-slide">
+                            <div class="project-card">
+                                <div class="project-card-header">
+                                    <div class="stars-left">
+                                        <img src="{% static 'img/projects-star.svg' %}" alt="*" class="star-large">
+                                        <img src="{% static 'img/projects-star.svg' %}" alt="*" class="star-small">
+                                    </div>
+                                    <h3 class="project-title"><a href="https://ddp0.csui.dev" target="_blank">DDP0
+                                            2026</a></h3>
+                                    <div class="stars-right">
+                                        <img src="{% static 'img/projects-star.svg' %}" alt="*" class="star-small">
+                                        <img src="{% static 'img/projects-star.svg' %}" alt="*" class="star-large">
+                                    </div>
+                                </div>
 
-                            <div class="project-info">
-                                <h4 class="project-subtitle">About [Project Name]</h4>
-                                <p class="project-desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean
-                                    feugiat gravida turpis, pharetra facilisis est elementum sed. Aenean eros dolor,
-                                    vestibulum non posuere ac, euismod id nisi. Curabitur tristique finibus bibendum.
-                                    Aenean tempor facilisis nunc, finibus ullamcorper ex ultricies quis.</p>
+                                <div class="project-card-body">
+                                    <div class="project-image-placeholder">
+                                        <img src="{% static 'img/ddp0-project.webp' %}" alt="DDP0"
+                                            class="project-image">
+                                    </div>
 
-                                <h4 class="project-tech-title">Tech Stack</h4>
-                                <ul class="project-tech-list">
-                                    <li>Techstack 1</li>
-                                    <li>Techstack 2</li>
-                                    <li>Techstack 3</li>
-                                </ul>
+                                    <div class="project-info">
+                                        <h4 class="project-subtitle">About</h4>
+                                        <p class="project-desc">Frontend developer for the DDP0 freshman platform. I
+                                            translated UI layouts into responsive code for the Home and About pages,
+                                            implementing custom features like the cherry blossom timeline and mission
+                                            statements.</p>
+
+                                        <h4 class="project-tech-title">Tech Stack</h4>
+                                        <ul class="project-tech-list">
+                                            <li>Vite</li>
+                                            <li>React Router</li>
+                                            <li>TypeScript</li>
+                                        </ul>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+
                     </div>
 
+                    <!-- Pagination -->
+                    <div class="swiper-pagination"></div>
+                    <!-- Navigation -->
+                    <div class="swiper-button-prev"></div>
+                    <div class="swiper-button-next"></div>
                 </div>
             </div>
 
@@ -59,11 +112,30 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+        // Folder open animation
         const folder = document.getElementById("projects-folder");
         if (folder) {
-            folder.addEventListener("click", function () {
-                this.classList.toggle("is-open");
+            folder.addEventListener("click", function (e) {
+                // Prevent closing when interacting with the slider inside
+                if (!this.classList.contains("is-open")) {
+                    this.classList.add("is-open");
+                }
             });
         }
+
+        // Initialize Swiper
+        const swiper = new Swiper(".projectsSwiper", {
+            loop: true,
+            grabCursor: true,
+            spaceBetween: 50, // Gap between slides
+            pagination: {
+                el: ".swiper-pagination",
+                clickable: true,
+            },
+            navigation: {
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev",
+            },
+        });
     });
 </script>

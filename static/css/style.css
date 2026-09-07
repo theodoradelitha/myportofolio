@@ -696,6 +696,7 @@ h3 {
     flex-direction: column;
     gap: 1.2rem;
     margin-bottom: 2rem;
+    height: 100%; /* Fill slide height perfectly */
 }
 
 .project-card-header {
@@ -743,6 +744,21 @@ h3 {
     line-height: 1;
 }
 
+.project-title a {
+    color: inherit;
+    text-decoration: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    display: inline-block;
+}
+
+.project-title a:hover {
+    opacity: 0.8;
+    text-decoration: underline;
+    text-underline-offset: 8px;
+    text-decoration-thickness: 3px;
+    transform: scale(1.02);
+}
+
 .project-card-body {
     display: flex;
     gap: 2rem;
@@ -754,6 +770,14 @@ h3 {
     border: 8px solid var(--maroon-main);
     border-radius: 12px;
     min-height: 220px;
+    overflow: hidden;
+}
+
+.project-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
 }
 
 .project-info {
@@ -790,7 +814,6 @@ h3 {
     font-weight: 400;
     font-size: 1.05rem;
     list-style-type: none;
-    /* using dots from content instead or standard bullets */
     padding-left: 0.5rem;
     display: flex;
     flex-direction: column;
@@ -800,4 +823,48 @@ h3 {
 .project-tech-list li::before {
     content: "· ";
     font-weight: bold;
+}
+
+/* ==========================================================================
+   SWIPER CUSTOM STYLES
+   ========================================================================== */
+.projectsSwiper {
+    width: 100%;
+    height: 100%;
+    padding-bottom: 3rem; /* Space for pagination */
+    padding-top: 1rem;
+}
+
+.swiper-slide {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    height: auto;
+}
+
+/* Customize Navigation Arrows */
+.swiper-button-next,
+.swiper-button-prev {
+    color: var(--maroon-main) !important;
+    transform: scale(0.8);
+}
+
+/* Position arrows slightly further out or inside */
+.swiper-button-prev {
+    left: 0px !important;
+}
+
+.swiper-button-next {
+    right: 0px !important;
+}
+
+/* Customize Pagination Dots */
+.swiper-pagination-bullet {
+    background-color: var(--maroon-muted) !important;
+    opacity: 0.5;
+}
+
+.swiper-pagination-bullet-active {
+    background-color: var(--maroon-main) !important;
+    opacity: 1;
 }
