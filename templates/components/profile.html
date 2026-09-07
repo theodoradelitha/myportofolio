@@ -2,18 +2,18 @@
 <!-- PROFILE SECTION -->
 <section class="profile" id="profile">
     <!-- Background stars -->
-    <img src="{% static 'img/bg-star-blur.svg' %}" class="star-bg star-profile-left" alt="" aria-hidden="true">
-    <img src="{% static 'img/bg-star-blur.svg' %}" class="star-bg star-profile-right" alt="" aria-hidden="true">
+    <img src="{% static 'img/bg-star-blur.svg' %}" class="star-bg star-profile-left floating-star" style="animation-delay: 2s;" alt="" aria-hidden="true">
+    <img src="{% static 'img/bg-star-blur.svg' %}" class="star-bg star-profile-right floating-star" style="animation-delay: 0.5s;" alt="" aria-hidden="true">
     
 
-    <img src="{% static 'img/bg-star-blur.svg' %}" class="star-bg star-profile-mobile-1" alt="" aria-hidden="true">
-    <img src="{% static 'img/bg-star-blur.svg' %}" class="star-bg star-profile-mobile-2" alt="" aria-hidden="true">
-    <img src="{% static 'img/bg-star-blur.svg' %}" class="star-bg star-profile-mobile-3" alt="" aria-hidden="true">
+    <img src="{% static 'img/bg-star-blur.svg' %}" class="star-bg star-profile-mobile-1 floating-star" style="animation-delay: 1s;" alt="" aria-hidden="true">
+    <img src="{% static 'img/bg-star-blur.svg' %}" class="star-bg star-profile-mobile-2 floating-star" style="animation-delay: 2.5s;" alt="" aria-hidden="true">
+    <img src="{% static 'img/bg-star-blur.svg' %}" class="star-bg star-profile-mobile-3 floating-star" style="animation-delay: 1.2s;" alt="" aria-hidden="true">
 
     <div class="container profile-grid">
 
         <!-- COLUMN 1: ID Card -->
-        <div class="profile-left">
+        <div class="profile-left" data-aos="fade-right">
             <picture>
                 <source media="(max-width: 768px)" srcset="{% static 'img/mobile-id.svg' %}">
                 <img class="id-card-img" src="{% static 'img/id-card.svg' %}" alt="Delitha Theodora ID Card">
@@ -21,7 +21,7 @@
         </div>
 
         <!-- COLUMN 2: Main Content -->
-        <div class="profile-middle">
+        <div class="profile-middle" data-aos="fade-up" data-aos-delay="200">
 
             <div class="profile-intro text-right">
                 <h2 class="section-title">About Me</h2>
@@ -64,7 +64,7 @@
         </div>
 
         <!-- COLUMN 3: Sidebar -->
-        <div class="profile-sidebar bg-maroon text-white">
+        <div class="profile-sidebar bg-maroon text-white" data-aos="fade-left" data-aos-delay="400">
 
             <div class="sidebar-section">
                 <h3 class="sidebar-title">Contact</h3>

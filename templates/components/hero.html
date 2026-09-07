@@ -2,18 +2,18 @@
 <!-- HERO SECTION-->
 <section class="hero" id="cover">
     <!-- Background stars -->
-    <img src="{% static 'img/bg-star-blur.svg' %}" class="star-bg star-left" alt="" aria-hidden="true">
-    <img src="{% static 'img/bg-star-blur.svg' %}" class="star-bg star-right" alt="" aria-hidden="true">
+    <img src="{% static 'img/bg-star-blur.svg' %}" class="star-bg star-left floating-star" style="animation-delay: 0s;" alt="" aria-hidden="true">
+    <img src="{% static 'img/bg-star-blur.svg' %}" class="star-bg star-right floating-star" style="animation-delay: 1.5s;" alt="" aria-hidden="true">
 
     <div class="hero-content">
-        <h2 class="hero-subtitle">Welcome to my</h2>
-        <img src="{% static 'img/portfolio-title.svg' %}" alt="PORTFOLIO" class="hero-title-img">
+        <h2 class="hero-subtitle" data-aos="fade-down">Welcome to my</h2>
+        <img src="{% static 'img/portfolio-title.svg' %}" alt="PORTFOLIO" class="hero-title-img" data-aos="zoom-in" data-aos-delay="200">
 
         <!-- Chips Container -->
         <div class="hero-chips-container">
-            <span class="chip">Front-End Developer</span>
-            <span class="chip">UI/UX Design</span>
-            <span class="chip">UX Researcher</span>
+            <span class="chip" data-aos="fade-up" data-aos-delay="400">Front-End Developer</span>
+            <span class="chip" data-aos="fade-up" data-aos-delay="500">UI/UX Design</span>
+            <span class="chip" data-aos="fade-up" data-aos-delay="600">UX Researcher</span>
         </div>
     </div>
 </section>
