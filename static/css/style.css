@@ -599,6 +599,10 @@ h3 {
 /* ==========================================================================
    PROJECTS SECTION
    ========================================================================== */
+.mobile-projects-title {
+    display: none;
+}
+
 .projects {
     position: relative;
     padding: 6rem 0;
@@ -977,6 +981,83 @@ h3 {
         bottom: 30%;
         right: -15%;
         transform: rotate(70deg);
+    }
+
+    /* Projects */
+    .projects {
+        padding: 3rem 0;
+        min-height: auto;
+        flex-direction: column;
+    }
+
+    .mobile-projects-title {
+        display: block;
+        font-family: 'Genty', sans-serif;
+        font-size: 3rem;
+        color: var(--maroon-main);
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    .folder-back,
+    .folder-front {
+        display: none !important;
+    }
+
+    .folder-wrapper {
+        perspective: none;
+        padding: 0;
+        width: 100%;
+        max-width: 500px;
+        margin: 0 auto;
+    }
+
+    .folder-content {
+        position: relative;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: auto;
+        padding: 0;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+    }
+
+    .project-card {
+        background-color: var(--cream);
+        border-radius: 20px;
+        padding: 1.5rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        margin: 0 auto;
+        width: 90%;
+    }
+
+    .project-card-body {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .project-title {
+        font-size: 2.2rem;
+    }
+
+    .star-large {
+        width: 40px;
+        height: 40px;
+    }
+
+    .star-small {
+        width: 25px;
+        height: 25px;
+    }
+
+    .project-image-placeholder {
+        min-height: 200px;
+        border-width: 4px;
+    }
+
+    .project-tech-title {
+        font-size: 1.5rem;
     }
 }
 
