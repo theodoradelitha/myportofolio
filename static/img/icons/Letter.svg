@@ -1,0 +1,10 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<title>Letter Icon</title>
+<rect width="32" height="32" fill="url(#pattern0_8_135)"/>
+<defs>
+<pattern id="pattern0_8_135" patternContentUnits="objectBoundingBox" width="1" height="1">
+<use xlink:href="#image0_8_135" transform="scale(0.0111111)"/>
+</pattern>
+<image id="image0_8_135" width="90" height="90" preserveAspectRatio="none" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAAEMklEQVR4nO2aPawUVRTHFyFoQkzwI8GEBhIaGhMiFlbaiEigsgNCQQmdDQVUhIKCGAsLTYyaKJWhwMrXSEUw2kChxeMlmFA82HP2zTnLx+45K14zC1F4MHfuzNz52N3zS07ykp2Ze+9v796583/T6xmGYRiGYRiGYRiGYRiGYRiGYRgRcUmyVQiuKqOzwswSxt/dcPhmNdmrq1uEYantwWhHSxivOIBX48xs5zYrw49tD0q7VoQ/OXfrlTJCN3g+26gE37Y+OO5IEXznnNtUxmVPCb/PO1kIL7Q+SG63hPEL59xLOZPy62zRgT8HJTi1wJLPhy6zftGBC7wSnBCCRwsjmOAf5cGnRTYOuaJDtyxCcFgIdAEk/y2Mx72SiV5bvxUOEj0tgj8ePMDtvgYm3D8ohA/nVzKOxwl+4pV8/+5bynB9/bnhoqcFt0Z0d5evIR323xcGnjvJjPcnhB/6xj5Kkh3KePNF5xcUPf1WV2Vt7W2vbIJ3hADmRzKsKQ/e8415PMTdynA76xqFRcdqWGekAifW3ryJVUr0Uz+lfbk/JcLltmVp6cpfKicJfBCyVJYW/fjbBsm9Ody7s+1FNwftegXc/McMh4RwFHK9SqKDtzszlvwJ428B29kjRbazlUUX3MD/PAOSQx7QThZ9QIsiuswjqXaxaowcooouErJo9yTXGqJFF91EpzVyNTE56hE9Q8mfNLTc1Se648mflEjgOiu6q8mflEzgOi16WgR/diX5k/AE7kbMdpsR3ZHkTyomcDMiut3kT1oOwhoV3daAJVICN1uiCccTHnzcy2GUJDuVcSVCmyvptfLaS/uU9m0uRE/TPoZDvUAqJ38BCdwzsmnwUWga11nRRSVXTf5CErgmZWc22AXJZZM/YfylyjtwdcjObKzJNXnC/QNKeNp3jHPLLyvBpdw2CS6lx/qupYRnJjTY3+SaXavoUMnyZEBC8FnuO3+MX3lm8pfpMZ7zNwjB50/6NmpSdm2ii0rW/2fkNz5Z//0LiWFJCPvTYlhKnyx956RpYvoy4ro+Nia7FtEha/KEBvsz10HCy6VegS2RwAX2tfKanXnx1iRznBtakQSuCdmZF250ueBMAdfSFK20ZKLXheDXwL6P8vtefhmJJjrWTNbnCv5SgneLSpakv6fok2WdMzuK6NgzWZ+//kNhOJvO0DzBjvkNYThX9mde18yuLLpuyfp0W48j1B+E4WgaEqW5cVrp38J4TBkvCuOwcjs1yK4kur7lAluv2MtIadHzLFlrkF1K9CJI1siyC4tuaoOvHaoYYy4kehEla6SxB4teZMkawUGQaJOMlV3kijbJGEW2V7RJxmiyMw8yyRhVdvYBNSZZOkcV+rju+zz3W2p7kNqRqvrPZ5PMLck2yVi/bJOMzck2DMMwDMMwDMMwDMMwDMMwDMMwes/yLz/EO5Jl31ZXAAAAAElFTkSuQmCC"/>
+</defs>
+</svg>

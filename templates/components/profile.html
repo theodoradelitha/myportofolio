@@ -1,0 +1,116 @@
+{% load static %}
+<!-- PROFILE SECTION -->
+<section class="profile" id="profile">
+    <!-- Background stars -->
+    <img src="{% static 'img/bg-star-blur.svg' %}" class="star-bg star-profile-left" alt="" aria-hidden="true">
+    <img src="{% static 'img/bg-star-blur.svg' %}" class="star-bg star-profile-right" alt="" aria-hidden="true">
+
+    <div class="container profile-grid">
+
+        <!-- COLUMN 1: ID Card -->
+        <div class="profile-left">
+            <img class="id-card-img" src="{% static 'img/id-card.svg' %}" alt="Delitha Theodora ID Card">
+        </div>
+
+        <!-- COLUMN 2: Main Content -->
+        <div class="profile-middle">
+
+            <div class="profile-intro text-right">
+                <h2 class="section-title">About Me</h2>
+                <p class="bio">Hi, I'm Delitha Theodora! I'm a CS student at Universitas Indonesia focused on
+                    frontend engineering (Next.js) and UI/UX design (Figma). I build intuitive, responsive web
+                    applications as a stepping stone toward my ultimate goal: a career in cybersecurity.</p>
+            </div>
+
+            <div class="profile-box">
+                <div class="profile-section">
+                    <h3 class="section-title-small">Education</h3>
+                    <p class="bold">Universitas Indonesia</p>
+                    <p class="small-text">Computer Science, International Class (2025-Present)</p>
+                </div>
+
+                <div class="profile-section">
+                    <h3 class="section-title-small">Experiences</h3>
+                    <div class="experience-item">
+                        <p class="bold">DDP0 - IT Development Staff (2026)</p>
+                        <p class="small-text">Developed responsive frontend architecture and collaborated with
+                            UI/UX teams.</p>
+                    </div>
+                    <div class="experience-item">
+                        <p class="bold">OH Fasilkom UI - IT Development Staff (2026)</p>
+                        <p class="small-text">Demonstrated frontend proficiency in Next.js and CSS during the
+                            technical selection phase.</p>
+                    </div>
+                    <div class="experience-item">
+                        <p class="bold">SISTECH - Intern Path Manager (2026)</p>
+                        <p class="small-text">Evaluated frontend engineering selection documents and moderated
+                            mentorship sessions.</p>
+                    </div>
+                    <div class="experience-item">
+                        <p class="bold">COMPFEST 18 - UX Academy Staff (2026)</p>
+                        <p class="small-text">Managed applicant outreach and facilitated interactive UX camp
+                            sessions.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- COLUMN 3: Sidebar -->
+        <div class="profile-sidebar bg-maroon text-white">
+
+            <div class="sidebar-section">
+                <h3 class="sidebar-title">Contact</h3>
+                <div class="social-links-col">
+                    <a href="mailto:delithatheo@gmail.com" class="social-link">
+                        <img src="{% static 'img/icons/Letter.svg' %}" alt="Email" class="sidebar-icon">
+                        delithatheo@gmail.com
+                    </a>
+                    <a href="tel:08158886664" class="social-link">
+                        <img src="{% static 'img/icons/Phone.svg' %}" alt="Phone" class="sidebar-icon">
+                        08158886664
+                    </a>
+                    <a href="https://www.linkedin.com/in/delitha-theodora-baa51a257/" class="social-link" target="_blank">
+                        <img src="{% static 'img/icons/LinkedIn.svg' %}" alt="LinkedIn" class="sidebar-icon">
+                        Delitha Theodora
+                    </a>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3 class="sidebar-title">Software Skills</h3>
+                <div class="software-list">
+                    <span class="software-item">
+                        <img src="{% static 'img/icons/Figma.svg' %}" alt="Figma" class="sidebar-icon">
+                        Figma
+                    </span>
+                    <a href="https://github.com/theodoradelitha/" class="social-link" target="_blank">
+                        <img src="{% static 'img/icons/GitHub.svg' %}" alt="GitHub" class="sidebar-icon">
+                        Git / Github
+                    </a>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3 class="sidebar-title">Technical Skills</h3>
+                <div class="chips-container">
+                    <span class="chip chip-white">UI/UX Design</span>
+                    <span class="chip chip-white">Responsive Web Design</span>
+                    <span class="chip chip-white">Frontend Development</span>
+                    <span class="chip chip-white">Wireframing & Prototyping</span>
+                    <span class="chip chip-white">User Research</span>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3 class="sidebar-title">Personal Skills</h3>
+                <p style="font-size: 1rem; color: var(--cream); line-height: 1.8;">
+                    Team Collaboration<br>
+                    Interface Troubleshooting<br>
+                    Fast Learner<br>
+                    Cross-Platform Setup
+                </p>
+            </div>
+
+        </div>
+    </div>
+</section>
