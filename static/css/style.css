@@ -407,6 +407,14 @@ h3 {
     z-index: 0;
 }
 
+.star-profile-mobile-1,
+.star-profile-mobile-2,
+.star-profile-mobile-3 {
+    display: none;
+    position: absolute;
+    z-index: 0;
+}
+
 /* Column 1: ID Card */
 .profile-left {
     flex: 2;
@@ -881,6 +889,94 @@ h3 {
         --star-left-size: 200px;
         --star-right-size: 230px;
         padding: 1.5rem;
+    }
+
+    /* Profile */
+    .profile-grid {
+        flex-direction: column;
+        align-items: center;
+        gap: 2rem;
+    }
+
+    .profile-left {
+        position: static;
+        width: 100%;
+        margin-bottom: 0;
+    }
+
+    .id-card-img {
+        max-width: 100%;
+        transform: rotate(0deg);
+    }
+
+    .id-card-img:hover {
+        transform: none;
+    }
+
+    .profile-middle {
+        margin-left: 0;
+        margin-right: 0;
+        width: 100%;
+    }
+
+    .profile-intro {
+        text-align: center;
+        padding-right: 0;
+    }
+
+    .section-title {
+        font-size: 2.2rem;
+    }
+
+    .bio {
+        font-size: 0.95rem;
+    }
+
+    .profile-box {
+        border-radius: 30px;
+        padding: 2rem;
+    }
+
+    .profile-sidebar {
+        width: 100%;
+    }
+
+
+    .star-profile-left {
+        width: 150px;
+        left: -5%;
+        top: 0%;
+    }
+
+    .star-profile-right {
+        width: 120px;
+        right: -5%;
+        bottom: -2%;
+    }
+
+
+    .star-profile-mobile-1 {
+        display: block;
+        width: 80px;
+        top: 25%;
+        right: 5%;
+        transform: rotate(45deg);
+    }
+
+    .star-profile-mobile-2 {
+        display: block;
+        width: 110px;
+        top: 55%;
+        left: -10%;
+        transform: rotate(-30deg);
+    }
+
+    .star-profile-mobile-3 {
+        display: block;
+        width: 140px;
+        bottom: 30%;
+        right: -15%;
+        transform: rotate(70deg);
     }
 }
 

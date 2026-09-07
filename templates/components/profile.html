@@ -4,12 +4,20 @@
     <!-- Background stars -->
     <img src="{% static 'img/bg-star-blur.svg' %}" class="star-bg star-profile-left" alt="" aria-hidden="true">
     <img src="{% static 'img/bg-star-blur.svg' %}" class="star-bg star-profile-right" alt="" aria-hidden="true">
+    
+
+    <img src="{% static 'img/bg-star-blur.svg' %}" class="star-bg star-profile-mobile-1" alt="" aria-hidden="true">
+    <img src="{% static 'img/bg-star-blur.svg' %}" class="star-bg star-profile-mobile-2" alt="" aria-hidden="true">
+    <img src="{% static 'img/bg-star-blur.svg' %}" class="star-bg star-profile-mobile-3" alt="" aria-hidden="true">
 
     <div class="container profile-grid">
 
         <!-- COLUMN 1: ID Card -->
         <div class="profile-left">
-            <img class="id-card-img" src="{% static 'img/id-card.svg' %}" alt="Delitha Theodora ID Card">
+            <picture>
+                <source media="(max-width: 768px)" srcset="{% static 'img/mobile-id.svg' %}">
+                <img class="id-card-img" src="{% static 'img/id-card.svg' %}" alt="Delitha Theodora ID Card">
+            </picture>
         </div>
 
         <!-- COLUMN 2: Main Content -->
@@ -69,7 +77,8 @@
                         <img src="{% static 'img/icons/Phone.svg' %}" alt="Phone" class="sidebar-icon">
                         08158886664
                     </a>
-                    <a href="https://www.linkedin.com/in/delitha-theodora-baa51a257/" class="social-link" target="_blank">
+                    <a href="https://www.linkedin.com/in/delitha-theodora-baa51a257/" class="social-link"
+                        target="_blank">
                         <img src="{% static 'img/icons/LinkedIn.svg' %}" alt="LinkedIn" class="sidebar-icon">
                         Delitha Theodora
                     </a>
