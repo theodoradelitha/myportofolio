@@ -15,8 +15,8 @@
         <!-- COLUMN 1: ID Card -->
         <div class="profile-left" data-aos="fade-right">
             <picture>
-                <source media="(max-width: 768px)" srcset="{% static 'img/mobile-id.svg' %}">
-                <img class="id-card-img" src="{% static 'img/id-card.svg' %}" alt="Delitha Theodora ID Card">
+                <source media="(max-width: 768px)" srcset="{% static 'img/mobile-id.webp' %}">
+                <img class="id-card-img" src="{% static 'img/id-card.webp' %}" alt="Delitha Theodora ID Card">
             </picture>
         </div>
 
@@ -25,16 +25,14 @@
 
             <div class="profile-intro text-right">
                 <h2 class="section-title">About Me</h2>
-                <p class="bio">Hi, I'm Delitha Theodora! I'm a CS student at Universitas Indonesia focused on
-                    frontend engineering (Next.js) and UI/UX design (Figma). I build intuitive, responsive web
-                    applications as a stepping stone toward my ultimate goal: a career in cybersecurity.</p>
+                <p class="bio">{{ bio }}</p>
             </div>
 
             <div class="profile-box">
                 <div class="profile-section">
                     <h3 class="section-title-small">Education</h3>
-                    <p class="bold">Universitas Indonesia</p>
-                    <p class="small-text">Computer Science, International Class (2025-Present)</p>
+                    <p class="bold">Universitas Indonesia (NPM: {{ npm }})</p>
+                    <p class="small-text">{{ study_program }}</p>
                 </div>
 
                 <div class="profile-section">
@@ -80,7 +78,7 @@
                     <a href="https://www.linkedin.com/in/delitha-theodora-baa51a257/" class="social-link"
                         target="_blank">
                         <img src="{% static 'img/icons/LinkedIn.svg' %}" alt="LinkedIn" class="sidebar-icon">
-                        Delitha Theodora
+                        {{ name }}
                     </a>
                 </div>
             </div>

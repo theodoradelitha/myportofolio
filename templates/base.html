@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Delitha Theodora - Portfolio</title>
+    <title>{{ name }} - Portfolio</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
@@ -18,12 +18,13 @@
     <!-- HEADER & NAVIGATION -->
     <header class="site-header">
         <div class="container">
-            <a href="#profile" class="brand">
+            <a href="{% url 'main:show_main' %}" class="brand">
                 <img src="{% static 'img/logo.svg' %}" alt="Delitha Logo" class="logo">
             </a>
             <nav>
-                <a href="#profile">Profile</a>
-                <a href="#projects">Projects</a>
+                <a href="{% url 'main:show_main' %}">Profile</a>
+                <a href="{% url 'main:show_main' %}#projects">Projects</a>
+                <a href="{% url 'main:show_experience' %}">Experience</a>
             </nav>
         </div>
     </header>
@@ -37,7 +38,7 @@
     <!-- FOOTER -->
     <footer class="site-footer">
         <div class="container">
-            <p>&copy; 2026 Delitha. Fakultas Ilmu Komputer, Universitas Indonesia.</p>
+            <p>&copy; 2026 {{ name }}. Fakultas Ilmu Komputer, Universitas Indonesia.</p>
         </div>
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
