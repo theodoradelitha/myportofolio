@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="container" style="padding: 100px 20px;">
+    <h2>Dev Diary</h2>
+    <div style="display: grid; gap: 2rem; margin-top: 2rem;">
+        
+        {% for post in blog_list %}
+        <article style="border: 1px solid var(--accent-light); padding: 2rem; border-radius: 8px;">
+            <h3>{{ post.title }}</h3>
+            <p style="font-size: 0.9rem; color: gray; margin-bottom: 1rem;">
+                {{ post.date_posted }} • {{ post.read_time }} min read
+            </p>
+            <p>{{ post.content }}</p>
+        </article>
+        
+        {% empty %}
+        <p style="color: var(--text-muted);">No posts yet. I'm currently writing my first one!</p>
+        {% endfor %}
+
+    </div>
+</section>
+{% endblock content %}
