@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from main.models import Experience, Project
+from main.models import Experience, Project, BlogPost
 
 def show_main(request):
     context = {
@@ -27,3 +27,10 @@ def show_projects(request):
         "projects_list": Project.objects.all(),
     }
     return render(request, "components/projects.html", context)
+
+def show_blog(request):
+    context = {
+        "name": "Delitha Theodora",
+        "blog_list": BlogPost.objects.all().order_by('-date_posted'),
+    }
+    return render(request, "components/blog.html", context)
