@@ -1,3 +1,4 @@
+from django.db import models
 import uuid
 
 from django.db import models
@@ -34,3 +35,10 @@ class Experience(models.Model):
     @property
     def is_ongoing(self):
         return self.ended_at is None # returns True when ended_at is empty
+
+class Projects(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    title = models.CharField(max_length=255)
+    description = models.TextField()
+    tech_stack = models.CharField(max_length=200)
+    demo_link = models.URLField(blank=True, null=True)
