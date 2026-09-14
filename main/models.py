@@ -43,6 +43,14 @@ class Project(models.Model):
     tech_stack = models.CharField(max_length=200)
     demo_link = models.URLField(blank=True, null=True)
     image = models.CharField(max_length=255, default="img/blank-folder.svg")
+    ended_at = models.DateField(null=True, blank=True)
+
+    def __str__(self):
+        return self.title
+
+    @property
+    def is_ongoing(self):
+        return self.ended_at is None
 
 class BlogPost(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -50,3 +58,13 @@ class BlogPost(models.Model):
     content = models.TextField()
     date_posted = models.DateField(auto_now_add=True)
     read_time = models.IntegerField(help_text="Read time in minutes")
+    
+    def __str__(self):
+        return self.title
+
+    @property
+    def snippet(self):
+        # returns the first 100 characters followed by an ellipsis
+        if len(self.content) > 100:
+            return f"{self.content[:100]}..."
+        return self.content
