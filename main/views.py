@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from main.models import Experience, Project, BlogPost
+from django.core.paginator import Paginator
 
 def show_main(request):
     context = {
@@ -29,8 +30,14 @@ def show_projects(request):
     return render(request, "components/projects.html", context)
 
 def show_blog(request):
+    blog_list = BlogPost.objects.all().order_by('-date_posted')
+
+    paginator = Paginator(blog_list, 3)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     context = {
-        "name": "Delitha Theodora",
-        "blog_list": BlogPost.objects.all().order_by('-date_posted'),
+        'blog_list': page_obj,
+        'page_obj': page_obj
     }
     return render(request, "components/blog.html", context)

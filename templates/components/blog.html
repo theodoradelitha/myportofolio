@@ -24,6 +24,23 @@
             <p class="blog-empty-state">No posts yet. I'm currently writing my first one!</p>
             {% endfor %}
 
+            <!-- pagination controls -->
+            <div class="pagination-controls" style="margin-top: 2rem; display: flex; gap: 1rem; justify-content: center;">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1">&laquo; First</a>
+                    <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                {% endif %}
+
+                <span class="current-page">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                </span>
+
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">Next</a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
+                {% endif %}
+            </div>
+
         </div>
     </div>
 </section>
