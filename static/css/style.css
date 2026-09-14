@@ -929,8 +929,39 @@ h3 {
    BLOG / DEV DIARY SECTION
    ========================================================================== */
 .blog-section {
+    position: relative;
     padding: 6rem 1.5rem;
     min-height: 80vh;
+    overflow-x: hidden;
+    background: radial-gradient(circle at top center, rgba(255, 255, 255, 0.6) 0%, transparent 60%);
+}
+
+/* Blog Background Stars */
+.star-blog-1 {
+    position: absolute;
+    width: 300px;
+    top: 5%;
+    left: -5%;
+    transform: rotate(25deg);
+    z-index: 0;
+}
+
+.star-blog-2 {
+    position: absolute;
+    width: 200px;
+    top: 40%;
+    right: 5%;
+    transform: rotate(-15deg);
+    z-index: 0;
+}
+
+.star-blog-3 {
+    position: absolute;
+    width: 400px;
+    bottom: -5%;
+    left: 10%;
+    transform: rotate(45deg);
+    z-index: 0;
 }
 
 .blog-main-title {
@@ -956,6 +987,7 @@ h3 {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     color: var(--maroon-main);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    z-index: 1;
 }
 
 .blog-card:hover {
@@ -1019,6 +1051,20 @@ h3 {
 
     .blog-post-title {
         font-size: 1.8rem;
+    }
+
+    .star-blog-1 {
+        width: 150px;
+        left: -10%;
+    }
+    .star-blog-2 {
+        width: 100px;
+        right: -5%;
+    }
+    .star-blog-3 {
+        width: 250px;
+        bottom: -2%;
+        left: 5%;
     }
 
     /* Profile */
