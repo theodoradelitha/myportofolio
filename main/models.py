@@ -43,3 +43,10 @@ class Project(models.Model):
     tech_stack = models.CharField(max_length=200)
     demo_link = models.URLField(blank=True, null=True)
     image = models.CharField(max_length=255, default="img/blank-folder.svg")
+
+class BlogPost(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    title = models.CharField(max_length=255)
+    content = models.TextField()
+    date_posted = models.DateField(auto_now_add=True)
+    read_time = models.IntegerField(help_text="Read time in minutes")
