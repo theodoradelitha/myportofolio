@@ -1,23 +1,30 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
-<section class="blog-section container">
-    <h2 class="blog-main-title">Dev Diary</h2>
-    <div class="blog-grid">
-        
-        {% for post in blog_list %}
-        <article class="blog-card">
-            <h3 class="blog-post-title">{{ post.title }}</h3>
-            <p class="blog-post-meta">
-                {{ post.date_posted }} • {{ post.read_time }} min read
-            </p>
-            <p class="blog-post-content">{{ post.content }}</p>
-        </article>
-        
-        {% empty %}
-        <p class="blog-empty-state">No posts yet. I'm currently writing my first one!</p>
-        {% endfor %}
+<section class="blog-section" id="blog">
+    <!-- Background stars -->
+    <img src="{% static 'img/bg-star-blur.svg' %}" class="star-bg star-blog-1 floating-star" style="animation-delay: 1s;" alt="" aria-hidden="true">
+    <img src="{% static 'img/bg-star-blur.svg' %}" class="star-bg star-blog-2 floating-star" style="animation-delay: 2.5s;" alt="" aria-hidden="true">
+    <img src="{% static 'img/bg-star-blur.svg' %}" class="star-bg star-blog-3 floating-star" style="animation-delay: 0.5s;" alt="" aria-hidden="true">
 
+    <div class="container">
+        <h2 class="blog-main-title">Dev Diary</h2>
+        <div class="blog-grid">
+            
+            {% for post in blog_list %}
+            <article class="blog-card">
+                <h3 class="blog-post-title">{{ post.title }}</h3>
+                <p class="blog-post-meta">
+                    {{ post.date_posted }} • {{ post.read_time }} min read
+                </p>
+                <p class="blog-post-content">{{ post.content }}</p>
+            </article>
+            
+            {% empty %}
+            <p class="blog-empty-state">No posts yet. I'm currently writing my first one!</p>
+            {% endfor %}
+
+        </div>
     </div>
 </section>
 {% endblock content %}
