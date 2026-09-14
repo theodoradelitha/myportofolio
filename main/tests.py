@@ -2,7 +2,7 @@ from django.test import TestCase, Client
 from django.urls import reverse
 from django.utils import timezone
 
-from main.models import Experience, Project
+from main.models import Experience, Project, BlogPost
 
 
 class MainTest(TestCase):
@@ -79,3 +79,26 @@ class ProjectTests(TestCase):
     def test_empty_message_appears_when_data_is_empty(self):
         response = self.client.get(reverse('main:show_projects'))
         self.assertContains(response, "No projects have been added yet.")
+
+class BlogPostTests(TestCase):
+    def test_blog_url_and_template(self):
+        # tests if the URL is accessible and uses the correct template
+        response = self.client.get(reverse('main:show_blog'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'components/blog.html')
+
+    def test_blog_data_appears_when_not_empty(self):
+        # tests if model data appears in the HTML response when not empty
+        BlogPost.objects.create(
+            title="Test Blog Post",
+            content="Testing the blog loop.",
+            read_time=5
+        )
+        response = self.client.get(reverse('main:show_blog'))
+        self.assertContains(response, "Test Blog Post")
+        self.assertContains(response, "Testing the blog loop.")
+
+    def test_empty_message_appears_when_data_is_empty(self):
+        # tests that an empty message appears when there is no data
+        response = self.client.get(reverse('main:show_blog'))
+        self.assertContains(response, "No posts yet. I'm currently writing my first one!")
