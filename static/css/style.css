@@ -261,7 +261,6 @@ h3 {
 
 .site-header .logo {
     height: 40px;
-    /* Adjust as needed */
     width: auto;
 }
 
@@ -927,6 +926,74 @@ h3 {
 }
 
 /* ==========================================================================
+   BLOG / DEV DIARY SECTION
+   ========================================================================== */
+.blog-section {
+    padding: 6rem 1.5rem;
+    min-height: 80vh;
+}
+
+.blog-main-title {
+    font-family: 'Genty', sans-serif;
+    font-size: 4.5rem;
+    color: var(--maroon-main);
+    text-align: center;
+    margin-bottom: 3rem;
+    line-height: 1.1;
+}
+
+.blog-grid {
+    display: grid;
+    gap: 2.5rem;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.blog-card {
+    background-color: var(--cream);
+    border-radius: 20px;
+    padding: 2.5rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    color: var(--maroon-main);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.blog-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+}
+
+.blog-post-title {
+    font-family: var(--font-heading);
+    font-size: 2.2rem;
+    color: var(--maroon-main);
+    margin-bottom: 0.5rem;
+}
+
+.blog-post-meta {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    color: var(--maroon-muted);
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+}
+
+.blog-post-content {
+    font-family: var(--font-body);
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: var(--maroon-main);
+}
+
+.blog-empty-state {
+    text-align: center;
+    font-family: var(--font-body);
+    font-size: 1.2rem;
+    color: var(--maroon-muted);
+    margin-top: 2rem;
+}
+
+/* ==========================================================================
    MEDIA QUERIES (RESPONSIVENESS)
    ========================================================================== */
 
@@ -939,6 +1006,19 @@ h3 {
         --star-left-size: 200px;
         --star-right-size: 230px;
         padding: 1.5rem;
+    }
+
+    /* Blog */
+    .blog-main-title {
+        font-size: 3rem;
+    }
+
+    .blog-card {
+        padding: 1.5rem;
+    }
+
+    .blog-post-title {
+        font-size: 1.8rem;
     }
 
     /* Profile */
