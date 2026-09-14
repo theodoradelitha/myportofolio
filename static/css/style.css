@@ -619,6 +619,44 @@ h3 {
     justify-content: center;
     align-items: center;
     overflow-x: hidden;
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.7) 0%, transparent 60%);
+}
+
+/* Projects Background Stars */
+.star-projects-1 {
+    position: absolute;
+    width: 380px;
+    top: 0%;
+    left: 2%;
+    transform: rotate(15deg);
+    z-index: 0;
+}
+
+.star-projects-2 {
+    position: absolute;
+    width: 250px;
+    bottom: 15%;
+    left: 12%;
+    transform: rotate(-20deg);
+    z-index: 0;
+}
+
+.star-projects-3 {
+    position: absolute;
+    width: 420px;
+    bottom: -5%;
+    right: 2%;
+    transform: rotate(35deg);
+    z-index: 0;
+}
+
+.star-projects-4 {
+    position: absolute;
+    width: 200px;
+    top: 15%;
+    right: 13%;
+    transform: rotate(-10deg);
+    z-index: 0;
 }
 
 .projects-container {
@@ -998,6 +1036,27 @@ h3 {
         flex-direction: column;
     }
 
+    .star-projects-1 {
+        width: 200px;
+        top: 5%;
+    }
+
+    .star-projects-2 {
+        display: none;
+    }
+
+    .star-projects-3 {
+        width: 250px;
+        bottom: 2%;
+        right: -15%;
+    }
+
+    .star-projects-4 {
+        width: 120px;
+        top: 15%;
+        right: -5%;
+    }
+
     .mobile-projects-title {
         display: block;
         font-family: 'Genty', sans-serif;
@@ -1104,10 +1163,12 @@ h3 {
         opacity: 0.4;
         filter: drop-shadow(0 0 0 rgba(255, 255, 255, 0));
     }
+
     50% {
         opacity: 1;
         filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.6));
     }
+
     100% {
         opacity: 0.4;
         filter: drop-shadow(0 0 0 rgba(255, 255, 255, 0));
