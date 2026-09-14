@@ -42,3 +42,4 @@ class Project(models.Model):
     description = models.TextField()
     tech_stack = models.CharField(max_length=200)
     demo_link = models.URLField(blank=True, null=True)
+    image = models.CharField(max_length=255, default="img/blank-folder.svg")

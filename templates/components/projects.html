@@ -1,4 +1,7 @@
+{% extends 'base.html' %}
 {% load static %}
+
+{% block content %}
 <!-- PROJECTS SECTION -->
 <section class="projects" id="projects">
     <h2 class="mobile-projects-title" data-aos="fade-up">My Projects</h2>
@@ -16,7 +19,7 @@
 
                         {% for project in projects_list %}
                         <!-- Dynamic Slide -->
-                         <div class="swiper-slide">
+                        <div class="swiper-slide">
                             <div class="project-card">
                                 <div class="project-card-header">
                                     <div class="stars-left">
@@ -35,38 +38,34 @@
                                 </div>
 
                                 <div class="project-card-body">
-                                    <!-- placeholder image -->
-                                     <div class="project-image-placeholder">
-                                        <img src="{% static 'img/blank-folder.svg' %}" alt="{{ project.title }}" class="project-image">
-                                     </div>
+                                    <div class="project-image-placeholder">
+                                        <img src="{% static project.image %}" alt="{{ project.title }}" class="project-image">
+                                    </div>
 
-                                     <div class="project-info">
+                                    <div class="project-info">
                                         <h4 class="project-subtitle">About</h4>
                                         <p class="project-desc">{{ project.description }}</p>
 
                                         <h4 class="project-tech-title">Tech Stack</h4>
                                         <ul class="project-tech-list">
-                                            <!-- displays the string from tech_stack model field -->
-                                             <li>{{ project.tech_stack }}</li>
+                                            <li>{{ project.tech_stack }}</li>
                                         </ul>
-                                     </div>
+                                    </div>
                                 </div>
                             </div>
-                         </div>
-
-                         {% empty %}
-                         <!-- required empty state -->
-                          <div class="swiper-slide">
+                        </div>
+                        {% empty %}
+                        <!-- Required Empty State -->
+                        <div class="swiper-slide">
                             <div class="project-card" style="display: flex; justify-content: center; align-items: center; min-height: 300px;">
                                 <p class="empty-state" style="color: var(--text-muted); font-weight: 500;">
                                     No projects have been added yet.
                                 </p>
                             </div>
-                          </div>
-                          {% endfor %}
+                        </div>
+                        {% endfor %}
 
                     </div>
-
                     <!-- Pagination -->
                     <div class="swiper-pagination"></div>
                     <!-- Navigation -->
@@ -88,7 +87,6 @@
         const folder = document.getElementById("projects-folder");
         if (folder) {
             folder.addEventListener("click", function (e) {
-                // Prevent closing when interacting with the slider inside
                 if (!this.classList.contains("is-open")) {
                     this.classList.add("is-open");
                 }
@@ -99,7 +97,7 @@
         const swiper = new Swiper(".projectsSwiper", {
             loop: true,
             grabCursor: true,
-            spaceBetween: 50, // Gap between slides
+            spaceBetween: 50,
             pagination: {
                 el: ".swiper-pagination",
                 clickable: true,
@@ -111,3 +109,4 @@
         });
     });
 </script>
+{% endblock content %}
