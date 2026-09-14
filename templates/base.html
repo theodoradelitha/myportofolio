@@ -22,9 +22,11 @@
                 <img src="{% static 'img/logo.svg' %}" alt="Delitha Logo" class="logo">
             </a>
             <nav>
-                <a href="{% url 'main:show_main' %}">Profile</a>
-                <a href="{% url 'main:show_main' %}#projects">Projects</a>
-                <a href="{% url 'main:show_experience' %}">Experience</a>
+                <nav>
+                    <a href="{% url 'main:show_main' %}">Profile</a>
+                    <a href="{% url 'main:show_projects' %}">Projects</a>
+                    <a href="{% url 'main:show_experience' %}">Experience</a>
+                </nav>
             </nav>
         </div>
     </header>
