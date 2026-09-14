@@ -14,17 +14,20 @@
                 <div class="swiper projectsSwiper">
                     <div class="swiper-wrapper">
 
-                        <!-- Slide 1 -->
-                        <div class="swiper-slide">
+                        {% for project in projects_list %}
+                        <!-- Dynamic Slide -->
+                         <div class="swiper-slide">
                             <div class="project-card">
                                 <div class="project-card-header">
                                     <div class="stars-left">
                                         <img src="{% static 'img/projects-star.svg' %}" alt="*" class="star-large">
                                         <img src="{% static 'img/projects-star.svg' %}" alt="*" class="star-small">
                                     </div>
-                                    <h3 class="project-title"><a
-                                            href="https://oh-26-it-dev-recruitment.vercel.app/ambassador"
-                                            target="_blank">OH26</a></h3>
+                                    <h3 class="project-title">
+                                        <a href="{% if project.demo_link %}{{ project.demo_link }}{% else %}#{% endif %}" target="_blank">
+                                            {{ project.title }}
+                                        </a>
+                                    </h3>
                                     <div class="stars-right">
                                         <img src="{% static 'img/projects-star.svg' %}" alt="*" class="star-small">
                                         <img src="{% static 'img/projects-star.svg' %}" alt="*" class="star-large">
@@ -32,105 +35,35 @@
                                 </div>
 
                                 <div class="project-card-body">
-                                    <div class="project-image-placeholder">
-                                        <img src="{% static 'img/oh-project.webp' %}" alt="OH26" class="project-image">
-                                    </div>
+                                    <!-- placeholder image -->
+                                     <div class="project-image-placeholder">
+                                        <img src="{% static 'img/blank-folder.svg' %}" alt="{{ project.title }}" class="project-image">
+                                     </div>
 
-                                    <div class="project-info">
+                                     <div class="project-info">
                                         <h4 class="project-subtitle">About</h4>
-                                        <p class="project-desc">Developed as an IT Dev selection assignment. I built the
-                                            recruitment landing page by efficiently composing pre-built UI components
-                                            from the design system (like the countdown timer and FAQ accordion) into a
-                                            responsive layout.</p>
+                                        <p class="project-desc">{{ project.description }}</p>
 
                                         <h4 class="project-tech-title">Tech Stack</h4>
                                         <ul class="project-tech-list">
-                                            <li>Next.js</li>
-                                            <li>TypeScript</li>
-                                            <li>Tailwind CSS</li>
+                                            <!-- displays the string from tech_stack model field -->
+                                             <li>{{ project.tech_stack }}</li>
                                         </ul>
-                                    </div>
+                                     </div>
                                 </div>
                             </div>
-                        </div>
+                         </div>
 
-                        <!-- Slide 2 -->
-                        <div class="swiper-slide">
-                            <div class="project-card">
-                                <div class="project-card-header">
-                                    <div class="stars-left">
-                                        <img src="{% static 'img/projects-star.svg' %}" alt="*" class="star-large">
-                                        <img src="{% static 'img/projects-star.svg' %}" alt="*" class="star-small">
-                                    </div>
-                                    <h3 class="project-title"><a href="https://ddp0.csui.dev" target="_blank">DDP026</a></h3>
-                                    <div class="stars-right">
-                                        <img src="{% static 'img/projects-star.svg' %}" alt="*" class="star-small">
-                                        <img src="{% static 'img/projects-star.svg' %}" alt="*" class="star-large">
-                                    </div>
-                                </div>
-
-                                <div class="project-card-body">
-                                    <div class="project-image-placeholder">
-                                        <img src="{% static 'img/ddp0-project.webp' %}" alt="DDP0"
-                                            class="project-image">
-                                    </div>
-
-                                    <div class="project-info">
-                                        <h4 class="project-subtitle">About</h4>
-                                        <p class="project-desc">Frontend developer for the DDP0 freshman platform. I
-                                            translated UI layouts into responsive code for the Home and About pages,
-                                            implementing custom features like the cherry blossom timeline and mission
-                                            statements.</p>
-
-                                        <h4 class="project-tech-title">Tech Stack</h4>
-                                        <ul class="project-tech-list">
-                                            <li>Vite</li>
-                                            <li>React Router</li>
-                                            <li>TypeScript</li>
-                                        </ul>
-                                    </div>
-                                </div>
+                         {% empty %}
+                         <!-- required empty state -->
+                          <div class="swiper-slide">
+                            <div class="project-card" style="display: flex; justify-content: center; align-items: center; min-height: 300px;">
+                                <p class="empty-state" style="color: var(--text-muted); font-weight: 500;">
+                                    No projects have been added yet.
+                                </p>
                             </div>
-                        </div>
-
-                        <!-- Slide 3 -->
-                        <div class="swiper-slide">
-                            <div class="project-card">
-                                <div class="project-card-header">
-                                    <div class="stars-left">
-                                        <img src="{% static 'img/projects-star.svg' %}" alt="*" class="star-large">
-                                        <img src="{% static 'img/projects-star.svg' %}" alt="*" class="star-small">
-                                    </div>
-                                    <h3 class="project-title"><a href="#" target="_blank">Symbiocle</a></h3>
-                                    <div class="stars-right">
-                                        <img src="{% static 'img/projects-star.svg' %}" alt="*" class="star-small">
-                                        <img src="{% static 'img/projects-star.svg' %}" alt="*" class="star-large">
-                                    </div>
-                                </div>
-
-                                <div class="project-card-body">
-                                    <div class="project-image-placeholder">
-                                        <img src="{% static 'img/symbiocle-project.webp' %}" alt="Symbiocle"
-                                            class="project-image">
-                                    </div>
-
-                                    <div class="project-info">
-                                        <h4 class="project-subtitle">About</h4>
-                                        <p class="project-desc">Frontend developer for a B2B circular economy platform
-                                            built for the IYREF Hackathon 2026. I engineered the Next.js MVP dashboard
-                                            to intuitively display AI-powered matchmaking results, connecting
-                                            waste-producing factories with compatible recyclers.</p>
-
-                                        <h4 class="project-tech-title">Tech Stack</h4>
-                                        <ul class="project-tech-list">
-                                            <li>Next.js 14</li>
-                                            <li>Tailwind CSS</li>
-                                            <li>Python FastAPI</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                          </div>
+                          {% endfor %}
 
                     </div>
 
