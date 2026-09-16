@@ -1,6 +1,11 @@
 from django.shortcuts import render
+from main.forms import ProjectForm
 from main.models import Experience, Project, BlogPost
 from django.core.paginator import Paginator
+from django.contrib import messages
+from django.core import serializers
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404, redirect, render
 
 def show_main(request):
     context = {
@@ -41,3 +46,17 @@ def show_blog(request):
         'page_obj': page_obj
     }
     return render(request, "components/blog.html", context)
+
+def create_object(request):
+    form = ProjectForm(request.POST or None)
+
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        messages.success(request, "New project has been added!")
+        return redirect("main:show_projects")
+
+    context = {
+        "name": "Delitha",
+        "form": form,
+    }
+    return render(request, "projects_form.html", context)
