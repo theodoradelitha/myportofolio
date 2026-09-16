@@ -5,14 +5,31 @@
 <!-- PROJECTS SECTION -->
 <section class="projects" id="projects">
     <!-- Background stars -->
-    <img src="{% static 'img/bg-star-blur.svg' %}" class="star-bg star-projects-1 floating-star" style="animation-delay: 1.5s;" alt="" aria-hidden="true">
-    <img src="{% static 'img/bg-star-blur.svg' %}" class="star-bg star-projects-2 floating-star" style="animation-delay: 0.3s;" alt="" aria-hidden="true">
-    <img src="{% static 'img/bg-star-blur.svg' %}" class="star-bg star-projects-3 floating-star" style="animation-delay: 2.1s;" alt="" aria-hidden="true">
-    <img src="{% static 'img/bg-star-blur.svg' %}" class="star-bg star-projects-4 floating-star" style="animation-delay: 0.8s;" alt="" aria-hidden="true">
+    <img src="{% static 'img/bg-star-blur.svg' %}" class="star-bg star-projects-1 floating-star"
+        style="animation-delay: 1.5s;" alt="" aria-hidden="true">
+    <img src="{% static 'img/bg-star-blur.svg' %}" class="star-bg star-projects-2 floating-star"
+        style="animation-delay: 0.3s;" alt="" aria-hidden="true">
+    <img src="{% static 'img/bg-star-blur.svg' %}" class="star-bg star-projects-3 floating-star"
+        style="animation-delay: 2.1s;" alt="" aria-hidden="true">
+    <img src="{% static 'img/bg-star-blur.svg' %}" class="star-bg star-projects-4 floating-star"
+        style="animation-delay: 0.8s;" alt="" aria-hidden="true">
 
-    <h2 class="mobile-projects-title" data-aos="fade-up">My Projects</h2>
+    <div class="project-header-controls container" data-aos="fade-up">
+        <h2 class="section-title text-center">My Projects</h2>
+        
+        <div class="project-controls-row">
+            <form method="get" action="{% url 'main:show_projects' %}" class="project-search">
+                <input type="search" name="title" value="{{ title_query }}" placeholder="Search project name..." class="project-search__input" aria-label="Search by project name">
+                <button type="submit" class="button">Search</button>
+            </form>
+
+            <a href="{% url 'main:create_project' %}" class="button project-add-button">
+                <span aria-hidden="true">+</span> Add Project
+            </a>
+        </div>
+    </div>
+
     <div class="container projects-container">
-
         <div class="folder-wrapper" id="projects-folder" data-aos="zoom-in-up" data-aos-duration="1000">
             <!-- Back Folder -->
             <img src="{% static 'img/blank-folder.svg' %}" alt="Projects Folder Back" class="folder-back">
@@ -33,7 +50,8 @@
                                         <img src="{% static 'img/projects-star.svg' %}" alt="*" class="star-small">
                                     </div>
                                     <h3 class="project-title">
-                                        <a href="{% if project.demo_link %}{{ project.demo_link }}{% else %}#{% endif %}" target="_blank">
+                                        <a href="{% if project.demo_link %}{{ project.demo_link }}{% else %}#{% endif %}"
+                                            target="_blank">
                                             {{ project.title }}
                                         </a>
                                     </h3>
@@ -45,7 +63,8 @@
 
                                 <div class="project-card-body">
                                     <div class="project-image-placeholder">
-                                        <img src="{% static project.image %}" alt="{{ project.title }}" class="project-image">
+                                        <img src="{% static project.image %}" alt="{{ project.title }}"
+                                            class="project-image">
                                     </div>
 
                                     <div class="project-info">
@@ -56,17 +75,29 @@
                                         <ul class="project-tech-list">
                                             <li>{{ project.tech_stack }}</li>
                                         </ul>
+
+                                        <!-- UPDATED: Delete Modal Action Included Here -->
+                                        <div class="project-actions" style="margin-top: 1rem;">
+                                            {% include "components/project_delete_modal.html" with project=project %}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         {% empty %}
-                        <!-- Required Empty State -->
+                        <!-- UPDATED: Dynamic Empty State based on Search Query -->
                         <div class="swiper-slide">
-                            <div class="project-card" style="display: flex; justify-content: center; align-items: center; min-height: 300px;">
+                            <div class="project-card"
+                                style="display: flex; justify-content: center; align-items: center; min-height: 300px;">
+                                {% if title_query %}
+                                <p class="empty-state" style="color: var(--text-muted); font-weight: 500;">
+                                    No projects found matching "{{ title_query }}".
+                                </p>
+                                {% else %}
                                 <p class="empty-state" style="color: var(--text-muted); font-weight: 500;">
                                     No projects have been added yet.
                                 </p>
+                                {% endif %}
                             </div>
                         </div>
                         {% endfor %}
@@ -83,7 +114,6 @@
             <!-- Cover Folder -->
             <img src="{% static 'img/clickable-folder.svg' %}" alt="Clickable Projects Folder" class="folder-front">
         </div>
-
     </div>
 </section>
 
@@ -93,6 +123,9 @@
         const folder = document.getElementById("projects-folder");
         if (folder) {
             folder.addEventListener("click", function (e) {
+                // Prevent folder click from triggering if clicking the search bar or buttons
+                if (e.target.closest('.project-header-controls')) return;
+
                 if (!this.classList.contains("is-open")) {
                     this.classList.add("is-open");
                 }
@@ -101,7 +134,7 @@
 
         // Initialize Swiper
         const swiper = new Swiper(".projectsSwiper", {
-            loop: true,
+            loop: false, // Set to false to prevent issues if there's only 1 project or an empty state
             grabCursor: true,
             spaceBetween: 50,
             pagination: {
