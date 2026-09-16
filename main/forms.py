@@ -11,16 +11,16 @@ class ProjectForm(ModelForm):
             "title",
             "description",
             "tech_stack",
-            "project_url",
-            "project_image_url",
+            "demo_link",
+            "image",
         ]
 
         labels = {
             "title": "Project Name",
             "description": "Project Description",
             "tech_stack": "Tech Stack Used",
-            "project_url": "Project URL",
-            "project_image_url": "Project Image URL"
+            "demo_link": "Project URL",
+            "image": "Project Image URL"
         }
 
         widgets = {
@@ -32,7 +32,7 @@ class ProjectForm(ModelForm):
             ),
             "description": Textarea(
                 attrs={
-                    "placeholder": "Tell us about your proejct",
+                    "placeholder": "Tell us about your project",
                     "rows": 3,
                 }
             ),
@@ -41,12 +41,12 @@ class ProjectForm(ModelForm):
                     "placeholder": "Django, Python, HTML, CSS",
                 }
             ),
-            "project_url": URLInput(
+            "demo_link": URLInput(
                 attrs={
                     "placeholder": "https://..."
                 }
             ),
-            "project_image_url": URLInput(
+            "image": URLInput(
                 attrs={
                     "placeholder": "https://"
                 }
