@@ -2,14 +2,20 @@ from django.urls import path
 from main.views import (
     show_main, show_experience, show_projects, show_blog,
     create_project, get_projects_json, delete_project, update_project,
-    create_blog, get_blogs_json, delete_blog, update_blog
+    create_blog, get_blogs_json, delete_blog, update_blog,
+    create_experience, get_experience_json, delete_experience, update_experience
 )
 
 app_name = 'main'
 
 urlpatterns = [
     path('', show_main, name='show_main'),
+
     path('experience/', show_experience, name='show_experience'),
+    path("experience/add/", create_experience, name="create_experience"),
+    path("api/experience/", get_experience_json, name="get_experience_json"),
+    path("experience/<uuid:exp_id>/update/", update_experience, name="update_experience"),
+    path("experience/<uuid:exp_id>/delete/", delete_experience, name="delete_experience"),
     
     path('projects/', show_projects, name='show_projects'),
     path("projects/add/", create_project, name="create_project"),
