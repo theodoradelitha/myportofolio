@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from main.forms import ProjectForm, BlogForm, ExperienceForm
 from main.models import Experience, Project, BlogPost
-from django.core.paginator import Paginator
 from django.contrib import messages
 from django.core import serializers
 from django.http import HttpResponse
@@ -21,6 +20,11 @@ def show_main(request):
     return render(request, "index.html", context)
 
 def show_experience(request):
+    """
+    Renders the Experience section of the portfolio.
+    Fetches experience data by internally calling the JSON API endpoint
+    and deserializing the response into Django model instances.
+    """
     json_response = get_experience_json(request)
 
     experience_list = serializers.deserialize(
@@ -36,6 +40,11 @@ def show_experience(request):
     return render(request, "components/experience.html", context)
 
 def create_experience(request):
+    """
+    Handles the creation of a new Experience entry.
+    Processes POST data through the ExperienceForm and redirects 
+    on success, or renders the empty/invalid form on GET/failure.
+    """
     form = ExperienceForm(request.POST or None)
 
     if request.method == "POST" and form.is_valid():
@@ -49,6 +58,10 @@ def create_experience(request):
     return render(request, "forms/experience_form.html", context)
 
 def update_experience(request, exp_id):
+    """
+    Handles updating an existing Experience entry by its UUID.
+    Pre-fills the ExperienceForm with the instance's current data.
+    """
     experience = get_object_or_404(Experience, pk=exp_id)
     form = ExperienceForm(request.POST or None, instance=experience)
 
@@ -64,11 +77,20 @@ def update_experience(request, exp_id):
     return render(request, "forms/experience_form.html", context)
 
 def get_experience_json(request):
+    """
+    API endpoint that returns all Experience records in JSON format,
+    ordered by their creation date (newest first).
+    """
     experiences = Experience.objects.all().order_by('-started_at')
     experiences_json = serializers.serialize("json", experiences)
     return HttpResponse(experiences_json, content_type="application/json")
 
 def delete_experience(request, exp_id):
+    """
+    Handles the deletion of a specific Experience entry by its UUID.
+    Requires a POST request (typically via a confirmation modal form) 
+    to execute the deletion.
+    """
     experience = get_object_or_404(Experience, pk=exp_id)
 
     if request.method == "POST":
