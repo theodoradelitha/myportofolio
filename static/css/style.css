@@ -1047,9 +1047,9 @@ h3 {
 }
 
 .blog-header-controls {
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center; 
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 2rem;
 }
 
@@ -1059,7 +1059,6 @@ h3 {
 
 /* Tablet (< 768px) */
 @media (max-width: 768px) {
-    /* Global Buttons */
     .button {
         padding: 0.4rem 0.75rem;
         font-size: 0.9rem;
@@ -1069,9 +1068,11 @@ h3 {
     .mobile-menu-toggle {
         display: flex;
     }
+
     .site-header .container {
         position: relative;
     }
+
     .site-header nav {
         display: none;
         position: absolute;
@@ -1086,6 +1087,7 @@ h3 {
         border-top: 1px solid rgba(255, 255, 255, 0.1);
         box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
     }
+
     .site-header nav.is-open {
         display: flex;
     }
