@@ -1,7 +1,7 @@
 from django.forms.models import ModelForm
 from django.forms.widgets import TextInput, Textarea, URLInput
 
-from main.models import Project, BlogPost
+from main.models import Project, BlogPost, Experience
 
 
 class ProjectForm(ModelForm):
@@ -87,4 +87,48 @@ class BlogForm(ModelForm):
                     "type": "number",
                 }
             ),
+        }
+
+class ExperienceForm(ModelForm):
+    class Meta:
+        model = Experience
+        fields = [
+            "title",
+            "description",
+            "category",
+            "thumbnail",
+            "ended_at"
+        ]
+
+        labels = {
+            "title": "Role / Position",
+            "description": "Experience Description",
+            "category": "Category",
+            "thumbnail": "Thumbnail URL",
+            "ended_at": "End Date"
+        }
+
+        widgets = {
+            "title": TextInput(
+                attrs={
+                    "placeholder": "Software Engineer Intern",
+                    "maxlength": 255,
+                }
+            ),
+            "description": Textarea(
+                attrs={
+                    "placeholder": "Describe what you did...",
+                    "rows": 4,
+                }
+            ),
+            "thumbnail": URLInput(
+                attrs={
+                    "placeholder": "https://"
+                }
+            ),
+            "ended_at": TextInput(
+                attrs={
+                    "type": "date",
+                }
+            )
         }
