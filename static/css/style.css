@@ -1059,6 +1059,12 @@ h3 {
 
 /* Tablet (< 768px) */
 @media (max-width: 768px) {
+    /* Global Buttons */
+    .button {
+        padding: 0.4rem 0.75rem;
+        font-size: 0.9rem;
+    }
+
     /* Mobile Dropdown Navbar */
     .mobile-menu-toggle {
         display: flex;
