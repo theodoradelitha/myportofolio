@@ -1410,18 +1410,28 @@ h3 {
     display: inline-block;
     height: fit-content;
     border: 0;
-    border-radius: var(--radius);
+    border-radius: var(--radius, 8px);
     padding: 0.65rem 1rem;
-    background: var(--accent);
-    color: white;
+    background: var(--maroon-main);
+    color: var(--cream);
     cursor: pointer;
     font: inherit;
     font-weight: 700;
     text-decoration: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.button:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
 }
 
 .button-secondary {
-    background: var(--ink);
+    background: var(--maroon-muted);
+}
+
+.button-danger {
+    background: var(--maroon-wine-red);
 }
 
 .project-header {
@@ -1598,18 +1608,15 @@ h3 {
     z-index: 1;
     width: min(100%, 480px);
     padding: 1.5rem;
-    background: var(--paper);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
+    background: var(--cream);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: var(--radius, 8px);
     box-shadow: 0 1rem 3rem rgba(28, 25, 23, 0.22);
 }
 
 .project-delete-modal__content h2 {
     margin: 0 0 0.75rem;
-    font-family:
-        "Space Grotesk",
-        -apple-system,
-        sans-serif;
+    font-family: var(--font-body);
     font-size: 1.5rem;
 }
 
