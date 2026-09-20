@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from main.forms import ProjectForm, BlogForm
+from main.forms import ProjectForm, BlogForm, ExperienceForm
 from main.models import Experience, Project, BlogPost
 from django.core.paginator import Paginator
 from django.contrib import messages
@@ -21,11 +21,62 @@ def show_main(request):
     return render(request, "index.html", context)
 
 def show_experience(request):
+    json_response = get_experience_json(request)
+
+    experience_list = serializers.deserialize(
+        "json",
+        json_response.content.decode("utf-8"),
+    )
+    experience_list = [exp.object for exp in experience_list]
+
     context = {
         "name": "Delitha Theodora",
-        "experience_list": Experience.objects.all(),
+        "experience_list": experience_list,
     }
     return render(request, "components/experience.html", context)
+
+def create_experience(request):
+    form = ExperienceForm(request.POST or None)
+
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        messages.success(request, "New experience has been added!")
+        return redirect("main:show_experience")
+
+    context = {
+        "form": form,
+    }
+    return render(request, "forms/experience_form.html", context)
+
+def update_experience(request, exp_id):
+    experience = get_object_or_404(Experience, pk=exp_id)
+    form = ExperienceForm(request.POST or None, instance=experience)
+
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        messages.success(request, "Experience has been updated!")
+        return redirect("main:show_experience")
+
+    context = {
+        "form": form,
+        "is_update": True,
+    }
+    return render(request, "forms/experience_form.html", context)
+
+def get_experience_json(request):
+    experiences = Experience.objects.all().order_by('-started_at')
+    experiences_json = serializers.serialize("json", experiences)
+    return HttpResponse(experiences_json, content_type="application/json")
+
+def delete_experience(request, exp_id):
+    experience = get_object_or_404(Experience, pk=exp_id)
+
+    if request.method == "POST":
+        experience.delete()
+        messages.success(request, "Experience has been deleted.")
+        return redirect("main:show_experience")
+
+    return redirect("main:show_experience")
 
 def show_projects(request):
     json_response = get_projects_json(request)
