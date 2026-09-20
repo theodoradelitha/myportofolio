@@ -1,7 +1,7 @@
 from django.forms.models import ModelForm
 from django.forms.widgets import TextInput, Textarea, URLInput
 
-from main.models import Project
+from main.models import Project, BlogPost
 
 
 class ProjectForm(ModelForm):
@@ -49,6 +49,42 @@ class ProjectForm(ModelForm):
             "image": URLInput(
                 attrs={
                     "placeholder": "https://"
+                }
+            ),
+        }
+
+class BlogForm(ModelForm):
+    class Meta:
+        model = BlogPost
+        fields = [
+            "title",
+            "content",
+            "read_time",
+        ]
+
+        labels = {
+            "title": "Post Title",
+            "content": "Post Content",
+            "read_time": "Read Time (minutes)"
+        }
+
+        widgets = {
+            "title": TextInput(
+                attrs={
+                    "placeholder": "Insert your post title",
+                    "maxlength": 255,
+                }
+            ),
+            "content": Textarea(
+                attrs={
+                    "placeholder": "Write your blog post here...",
+                    "rows": 10,
+                }
+            ),
+            "read_time": TextInput(
+                attrs={
+                    "placeholder": "e.g. 5",
+                    "type": "number",
                 }
             ),
         }
