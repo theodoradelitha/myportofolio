@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from main.forms import ProjectForm
+from main.forms import ProjectForm, BlogForm
 from main.models import Experience, Project, BlogPost
 from django.core.paginator import Paginator
 from django.contrib import messages
@@ -52,17 +52,61 @@ def show_projects(request):
 #     return render(request, "components/projects.html", context)
 
 def show_blog(request):
-    blog_list = BlogPost.objects.all().order_by('-date_posted')
+    json_response = get_blogs_json(request)
 
-    paginator = Paginator(blog_list, 3)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
+    blog_list = serializers.deserialize(
+        "json",
+        json_response.content.decode("utf-8"),
+    )
+    blog_list = [blog.object for blog in blog_list]
 
     context = {
-        'blog_list': page_obj,
-        'page_obj': page_obj
+        'blog_list': blog_list,
     }
     return render(request, "components/blog.html", context)
+
+def create_blog(request):
+    form = BlogForm(request.POST or None)
+
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        messages.success(request, "New blog post has been added!")
+        return redirect("main:show_blog")
+
+    context = {
+        "form": form,
+    }
+    return render(request, "forms/blog_form.html", context)
+
+def update_blog(request, blog_id):
+    blog = get_object_or_404(BlogPost, pk=blog_id)
+    form = BlogForm(request.POST or None, instance=blog)
+
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        messages.success(request, "Blog post has been updated!")
+        return redirect("main:show_blog")
+
+    context = {
+        "form": form,
+        "is_update": True,
+    }
+    return render(request, "forms/blog_form.html", context)
+
+def get_blogs_json(request):
+    blogs = BlogPost.objects.all().order_by('-date_posted')
+    blogs_json = serializers.serialize("json", blogs)
+    return HttpResponse(blogs_json, content_type="application/json")
+
+def delete_blog(request, blog_id):
+    blog = get_object_or_404(BlogPost, pk=blog_id)
+
+    if request.method == "POST":
+        blog.delete()
+        messages.success(request, "Blog post has been deleted.")
+        return redirect("main:show_blog")
+
+    return redirect("main:show_blog")
 
 def create_project(request):
     form = ProjectForm(request.POST or None)
