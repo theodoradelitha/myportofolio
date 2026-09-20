@@ -78,6 +78,22 @@ def create_project(request):
     }
     return render(request, "forms/projects_form.html", context)
 
+def update_project(request, project_id):
+    project = get_object_or_404(Project, pk=project_id)
+    form = ProjectForm(request.POST or None, instance=project)
+
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        messages.success(request, "Project has been updated!")
+        return redirect("main:show_projects")
+
+    context = {
+        "name": "Delitha",
+        "form": form,
+        "is_update": True,
+    }
+    return render(request, "forms/projects_form.html", context)
+
 def get_projects_json(request):
     title_query = request.GET.get("title", "").strip()
     projects = Project.objects.all()
