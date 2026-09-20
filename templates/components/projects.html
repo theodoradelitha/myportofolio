@@ -16,10 +16,11 @@
 
     <div class="project-header-controls container" data-aos="fade-up">
         <h2 class="section-title text-center">My Projects</h2>
-        
+
         <div class="project-controls-row">
             <form method="get" action="{% url 'main:show_projects' %}" class="project-search">
-                <input type="search" name="title" value="{{ title_query }}" placeholder="Search project name..." class="project-search__input" aria-label="Search by project name">
+                <input type="search" name="title" value="{{ title_query }}" placeholder="Search project name..."
+                    class="project-search__input" aria-label="Search by project name">
                 <button type="submit" class="button">Search</button>
             </form>
 
@@ -76,8 +77,11 @@
                                             <li>{{ project.tech_stack }}</li>
                                         </ul>
 
-                                        <!-- UPDATED: Delete Modal Action Included Here -->
-                                        <div class="project-actions" style="margin-top: 1rem;">
+                                        <!-- Delete Modal Action -->
+                                        <div class="project-actions"
+                                            style="margin-top: 1rem; display: flex; gap: 10px; align-items: center;">
+                                            <a href="{% url 'main:update_project' project.id %}"
+                                                class="button button-secondary">Edit Project</a>
                                             {% include "components/project_delete_modal.html" with project=project %}
                                         </div>
                                     </div>
@@ -85,7 +89,7 @@
                             </div>
                         </div>
                         {% empty %}
-                        <!-- UPDATED: Dynamic Empty State based on Search Query -->
+
                         <div class="swiper-slide">
                             <div class="project-card"
                                 style="display: flex; justify-content: center; align-items: center; min-height: 300px;">
