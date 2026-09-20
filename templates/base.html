@@ -21,13 +21,16 @@
             <a href="{% url 'main:show_main' %}" class="brand">
                 <img src="{% static 'img/logo.svg' %}" alt="Delitha Logo" class="logo">
             </a>
-            <nav>
-                <nav>
-                    <a href="{% url 'main:show_main' %}">Profile</a>
-                    <a href="{% url 'main:show_projects' %}">Projects</a>
-                    <a href="{% url 'main:show_experience' %}">Experiences</a>
-                    <a href="{% url 'main:show_blog' %}">Blog</a>
-                </nav>
+            <button class="mobile-menu-toggle" aria-label="Toggle Menu" id="mobile-menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <nav id="site-nav" class="site-nav">
+                <a href="{% url 'main:show_main' %}">Profile</a>
+                <a href="{% url 'main:show_projects' %}">Projects</a>
+                <a href="{% url 'main:show_experience' %}">Experiences</a>
+                <a href="{% url 'main:show_blog' %}">Blog</a>
             </nav>
         </div>
     </header>
@@ -51,6 +54,17 @@
             once: true, // whether animation should happen only once - while scrolling down
             offset: 100, // offset (in px) from the original trigger point
             duration: 800, // values from 0 to 3000, with step 50ms
+        });
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const toggle = document.getElementById("mobile-menu-toggle");
+            const nav = document.getElementById("site-nav");
+            if (toggle && nav) {
+                toggle.addEventListener("click", function () {
+                    nav.classList.toggle("is-open");
+                });
+            }
         });
     </script>
 </body>
