@@ -1,0 +1,26 @@
+<button type="button" class="button button-danger" popovertarget="delete-blog-{{ post.id }}"
+    aria-label="Delete {{ post.title }}" title="Delete blog post">
+    Delete Post
+</button>
+<div id="delete-blog-{{ post.id }}" class="project-delete-modal" popover="auto" role="dialog" aria-modal="true"
+    aria-labelledby="delete-blog-title-{{ post.id }}">
+    <button type="button" class="project-delete-modal__backdrop" popovertarget="delete-blog-{{ post.id }}"
+        popovertargetaction="hide" aria-label="Close delete confirmation"></button>
+    <div class="project-delete-modal__content">
+        <button type="button" class="project-delete-modal__close" popovertarget="delete-blog-{{ post.id }}"
+            popovertargetaction="hide" aria-label="Close delete confirmation">×</button>
+        <h2 id="delete-blog-title-{{ post.id }}">Delete post?</h2>
+        <p>
+            Are you sure you want to delete
+            <strong>{{ post.title }}</strong>?
+        </p>
+        <div class="project-delete-modal__actions">
+            <button type="button" class="button button-secondary" popovertarget="delete-blog-{{ post.id }}"
+                popovertargetaction="hide">Cancel</button>
+            <form method="post" action="{% url 'main:delete_blog' post.id %}">
+                {% csrf_token %}
+                <button type="submit" class="button button-danger">Yes, delete</button>
+            </form>
+        </div>
+    </div>
+</div>
