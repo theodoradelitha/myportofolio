@@ -17,6 +17,14 @@
 
 ---
 
+### Weekly Progress / Changelog
+
+*   **Week 1 (Assignment 1):** Built the static portfolio using HTML5 and CSS. Implemented a responsive layout, including absolute positioning for the desktop folder UI and a mobile-friendly flexbox structure.
+*   **Week 2 (Assignment 2):** Migrated the static site to Django. Implemented the MTV architecture, created Project and BlogPost models, and set up dynamic template rendering and database migrations.
+*   **Week 3 (Assignment 3):** Implemented full CRUD (Create, Read, Update, Delete) operations for the Projects, Blog, and Experience sections using Django ModelForm. Added JSON serialization endpoints and responsive UI enhancements (mobile hamburger menu, delete confirmation modals).
+
+---
+
 ### Assignment 1
 
 1. Yes, I was pretty strict about using HTML5 semantic elements for the main structure. In `base.html`, I used `<header>`, `<main>`, `<nav>`, and `<footer>`. To separate the content sections, I utilized `<section>` (for example, `<section class="hero">` and `<section class="projects">`). I also use the `<picture>` and `<source>` tags specifically to render different ID Card assets for desktop and mobile.
@@ -102,3 +110,63 @@ I used AI more like a discussion partner rather than just asking it to generate 
 * `kok blog contentnya gone pas pagination ditambahin, padahal contextny udah dioper?`
 * `what should I assert in tests.py for checking the empty state?`
 * `oh no this branch says it cant automatically merge... how to resolve it without merging yet?`
+
+---
+
+### Assignment 3
+
+1. **Why use Django’s `ModelForm` instead of manual HTML forms? Why add `{% csrf_token %}`?**
+   **Why ModelForm:**
+   * **No Repetition (DRY):** When we manually write HTML forms, we have to recreate every single input field that already exists in the database model. `ModelForm` reads the model and generates the correct HTML inputs (like text fields, dropdowns, and date pickers) automatically.
+   * **Automatic Validation:** `ModelForm` automatically enforces the rules defined in the models (like `max_length` or `choices`). If a user inputs invalid data, the form catches it without us having to write manual Python or JavaScript validation logic.
+   * **Easy Saving:** Because the form is tied directly to the model, saving a new database entry is as simple as calling `form.save()`.
+   
+   **Why `{% csrf_token %}`:**
+   * **Security:** CSRF (Cross-Site Request Forgery) is a common attack where a malicious website tricks a user's browser into submitting a harmful request to the website. The `{% csrf_token %}` generates a unique, hidden, and encrypted string on the form. When the form is submitted, Django checks this token to guarantee that the request legitimately originated from the website and not a hacker's script.
+
+2. **Why is JSON preferred over XML in modern web development?**
+   While both formats are used to transmit data, JSON is preferred in the modern web for a few reasons:
+   * **Native to JavaScript:** JSON (JavaScript Object Notation) is natively understood by JavaScript. In modern web dev (like React, Vue, or vanilla JS), turning a JSON response into a usable object takes exactly one line of code (`response.json()`), whereas XML requires heavy and complex DOM parsing.
+   * **Lightweight and Readable:** XML relies on heavy opening and closing tags for every piece of data (e.g., `<name>Delitha</name>`). JSON simply uses lightweight brackets and quotes (e.g., `"name": "Delitha"`). This makes JSON files smaller, faster to transmit over the network, and easier for humans to read.
+   * **Data Structures:** JSON maps perfectly to modern programming structures like Arrays (Lists) and Objects (Dictionaries), whereas XML is purely a document tree.
+
+3. **What is the flow when returning portfolio data in JSON? Why serialize Django models?**
+   **The Flow:**
+   * **The Request:** A user (or frontend code) accesses a URL like `/api/experience/`.
+   * **The Query:** The Django view function (`get_experience_json`) queries the database to retrieve the raw data (e.g., `Experience.objects.all()`).
+   * **The Serialization:** Django passes this QuerySet into the serialization engine, which translates the data into a JSON string.
+   * **The Response:** The view returns an `HttpResponse` containing the JSON string, tagging it with `content_type="application/json"` so the browser knows exactly what it's receiving.
+   
+   **Why Serialization is Required:**
+   When you query the database in Django, it returns a `QuerySet` containing complex Python Objects (your models). Web browsers, mobile apps, and frontend JavaScript cannot read Python objects. Serialization is the necessary translation process that takes complex, language-specific objects in memory and flattens them into a universal, plain-text format (JSON) that can be easily sent over the internet and understood by any other language or system.
+
+<br>
+
+## AI Usage Disclosure
+
+For this assignment, I utilized AI as a targeted learning assistant to bridge the gap between the course tutorials and my specific project requirements.
+
+**Tools Used:** Gemini
+
+**Prompt Strategy:** 
+To ensure I was actually learning the material, I avoided pasting my entire codebase into the prompt. Instead, my strategy was to ask targeted, conceptual questions (e.g., "how does the update view work in django?") or request isolated code snippets and hints to understand the logic before implementing it myself. 
+
+**Specific Assisted Parts:**
+*   **Projects CRUD:** The foundational `Create` and `Read` operations for my Projects section were adapted directly from Tutorial 3. 
+*   **Update & Delete Logic:** When extending the tutorial logic to include `Update` and `Delete` functionalities, I asked the AI for conceptual hints on how to pass instance data to a `ModelForm` and how to structure a delete confirmation modal.
+*   **Model Replication:** I applied the concepts learned from the Projects section to manually replicate the full CRUD structure for my **Blog** and **Experience** sections, occasionally asking the AI for syntax reminders.
+*   **Git Best Practices:** I used the AI to help format conventional commit messages (e.g., `feat:`, `fix:`, `style:`) to maintain a clean, atomic Git history.
+
+**Critical Analysis of AI Limitations & Manual Fixes:**
+While the AI was excellent at explaining Django backend logic, it lacked the holistic context of my frontend design. 
+*   **CSS Variable Hallucinations:** At one point, the AI suggested button classes using CSS variables that didn't exist in my stylesheet, resulting in invisible text buttons. I had to manually debug my `style.css` and direct the AI to use my existing theme variables.
+*   **Layout Breakages:** When asking for a fix for a mobile layout issue, the AI suggested applying an inline `flex-direction: column` style. While this fixed the mobile view, it completely broke the desktop view. I had to manually discard the AI's inline style and implement proper responsive media queries in my CSS file instead.
+
+**Prompting History/Log:**
+*   how do i pass an existing project's data into a django modelform so the fields are already filled out when i try to update it?
+*   what is the best way to handle a delete confirmation in django without making a whole new page? can i just use a popup card like thing?
+*   im copying my projects crud structure for my blog and experience sections, but i want to use the same form template. how do i make the button text dynamic (like saying "add" vs "update")?
+*   i dont quite understand how serialize works, can you try to teach me?
+*   my edit and delete buttons are completely invisible on the project cards lmao
+*   whats a great way for me to organize the overflowing navbar in mobile?
+*   what are the best practices for git commit messages?
