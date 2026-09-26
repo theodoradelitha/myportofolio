@@ -18,7 +18,7 @@
     <!-- HEADER & NAVIGATION -->
     <header class="site-header">
         <div class="container">
-            <a href="{% url 'main:show_main' %}" class="brand">
+            <a href="{%  url 'main:show_main' %}" class="brand">
                 <img src="{% static 'img/logo.svg' %}" alt="Delitha Logo" class="logo">
             </a>
             <button class="mobile-menu-toggle" aria-label="Toggle Menu" id="mobile-menu-toggle">
@@ -28,9 +28,16 @@
             </button>
             <nav id="site-nav" class="site-nav">
                 <a href="{% url 'main:show_main' %}">Profile</a>
-                <a href="{% url 'main:show_projects' %}">Projects</a>
                 <a href="{% url 'main:show_experience' %}">Experiences</a>
+                <a href="{% url 'main:show_projects' %}">Projects</a>
                 <a href="{% url 'main:show_blog' %}">Blog</a>
+                {% if user.is_authenticated %}
+                    <span class="nav-user">{{ user.username }}</span>
+                    <a href="{% url 'main:logout' %}">Logout</a>
+                {% else %}
+                    <a href="{% url 'main:login' %}">Login</a>
+                    <a href="{% url 'main:register' %}">Register</a>
+                {% endif %}
             </nav>
         </div>
     </header>
