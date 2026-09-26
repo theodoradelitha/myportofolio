@@ -24,9 +24,13 @@
                 <button type="submit" class="button">Search</button>
             </form>
 
-            <a href="{% url 'main:create_project' %}" class="button project-add-button">
-                <span aria-hidden="true">+</span> Add Project
-            </a>
+            {% if user.is_superuser %}  
+                <a href="{% url 'main:create_project' %}"
+                class="button project-add-button">
+                    <span aria-hidden="true">+</span>
+                    Add Project
+                </a>
+            {% endif %}                
         </div>
     </div>
 
@@ -78,12 +82,14 @@
                                         </ul>
 
                                         <!-- Delete Modal Action -->
+                                        {% if user.is_superuser %}
                                         <div class="project-actions"
                                             style="margin-top: 1rem; display: flex; gap: 10px; align-items: center;">
                                             <a href="{% url 'main:update_project' project.id %}"
                                                 class="button button-secondary">Edit Project</a>
                                             {% include "components/project_delete_modal.html" with project=project %}
                                         </div>
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>
