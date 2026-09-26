@@ -4,7 +4,8 @@ from main.views import (
     create_project, get_projects_json, delete_project, update_project,
     create_blog, get_blogs_json, delete_blog, update_blog,
     create_experience, get_experience_json, delete_experience, update_experience,
-    register, login_user, logout_user
+    register, login_user, logout_user,
+    toggle_star_project, toggle_star_blog
 )
 
 app_name = 'main'
@@ -23,12 +24,14 @@ urlpatterns = [
     path("api/projects/", get_projects_json, name="get_projects_json"),
     path("projects/<uuid:project_id>/update/", update_project, name="update_project"),
     path("projects/<uuid:project_id>/delete/", delete_project, name="delete_project"),
+    path("projects/<uuid:project_id>/star/", toggle_star_project, name="toggle_star_project"),
 
     path('blog/', show_blog, name='show_blog'),
     path("blog/add/", create_blog, name="create_blog"),
     path("api/blog/", get_blogs_json, name="get_blogs_json"),
     path("blog/<uuid:blog_id>/update/", update_blog, name="update_blog"),
     path("blog/<uuid:blog_id>/delete/", delete_blog, name="delete_blog"),
+    path("blog/<uuid:blog_id>/star/", toggle_star_blog, name="toggle_star_blog"),
 
     path("register/", register, name="register"),
     path("login/", login_user, name="login"),

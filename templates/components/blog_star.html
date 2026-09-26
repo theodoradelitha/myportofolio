@@ -1,0 +1,10 @@
+<form method="post" action="{% url 'main:toggle_star_blog' post.id %}" class="star-form" style="display: inline-block;">
+    {% csrf_token %}
+    <button type="submit"
+            class="button button-star{% if user in post.starred_by.all %} is-starred{% endif %}"
+            title="{% if post.starred_by.all %}Starred by {{ post.starred_by.all|join:', ' }}{% else %}Be the first to star{% endif %}">
+        <span aria-hidden="true">★</span>
+        {% if user in post.starred_by.all %}Unstar{% else %}Star{% endif %}
+        <span class="star-count">{{ post.starred_by.count }}</span>
+    </button>
+</form>

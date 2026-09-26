@@ -294,3 +294,23 @@ def logout_user(request):
     response = redirect("main:show_main")
     response.delete_cookie('last_login')
     return response
+
+@login_required(login_url="/login/")
+def toggle_star_project(request, project_id):
+    project = get_object_or_404(Project, pk=project_id)
+    if request.method == "POST":
+        if request.user in project.starred_by.all():
+            project.starred_by.remove(request.user)
+        else:
+            project.starred_by.add(request.user)
+    return redirect("main:show_projects")
+
+@login_required(login_url="/login/")
+def toggle_star_blog(request, blog_id):
+    blog = get_object_or_404(BlogPost, pk=blog_id)
+    if request.method == "POST":
+        if request.user in blog.starred_by.all():
+            blog.starred_by.remove(request.user)
+        else:
+            blog.starred_by.add(request.user)
+    return redirect("main:show_blog")

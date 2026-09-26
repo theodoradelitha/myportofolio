@@ -29,12 +29,15 @@
                 </p>
                 <p class="blog-post-content">{{ post.content }}</p>
 
-                {% if user.is_superuser %}
                 <div class="blog-actions" style="margin-top: 1.5rem; display: flex; gap: 10px; align-items: center;">
-                    <a href="{% url 'main:update_blog' post.id %}" class="button button-secondary">Edit Post</a>
-                    {% include "components/blog_delete_modal.html" with post=post %}
+                    {% if user.is_authenticated %}
+                        {% include "components/blog_star.html" with post=post %}
+                    {% endif %}
+                    {% if user.is_superuser %}
+                        <a href="{% url 'main:update_blog' post.id %}" class="button button-secondary">Edit Post</a>
+                        {% include "components/blog_delete_modal.html" with post=post %}
+                    {% endif %}
                 </div>
-                {% endif %}
             </article>
 
             {% empty %}

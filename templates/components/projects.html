@@ -81,15 +81,17 @@
                                             <li>{{ project.tech_stack }}</li>
                                         </ul>
 
-                                        <!-- Delete Modal Action -->
-                                        {% if user.is_superuser %}
-                                        <div class="project-actions"
-                                            style="margin-top: 1rem; display: flex; gap: 10px; align-items: center;">
-                                            <a href="{% url 'main:update_project' project.id %}"
-                                                class="button button-secondary">Edit Project</a>
-                                            {% include "components/project_delete_modal.html" with project=project %}
+                                        <!-- Actions (Star, Edit, Delete) -->
+                                        <div class="project-actions" style="margin-top: 1rem; display: flex; gap: 10px; align-items: center;">
+                                            {% if user.is_authenticated %}
+                                                {% include "components/project_star.html" with project=project %}
+                                            {% endif %}
+                                            {% if user.is_superuser %}
+                                                <a href="{% url 'main:update_project' project.id %}"
+                                                    class="button button-secondary">Edit Project</a>
+                                                {% include "components/project_delete_modal.html" with project=project %}
+                                            {% endif %}
                                         </div>
-                                        {% endif %}
                                     </div>
                                 </div>
                             </div>
