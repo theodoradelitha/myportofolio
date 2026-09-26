@@ -1,7 +1,6 @@
-from django.db import models
 import uuid
-
 from django.db import models
+from django.contrib.auth.models import User
 
 class Experience(models.Model):
 
@@ -27,6 +26,9 @@ class Experience(models.Model):
     thumbnail = models.URLField(blank=True, default="")
     started_at = models.DateTimeField(auto_now_add=True) # records when the row is created
     ended_at = models.DateTimeField(blank=True, null=True) # may be left empty for an ongoing experience
+    starred_by = models.ManyToManyField(
+        User, related_name="starred_experiences", blank=True
+    )
 
     # gives each object a readable string representation
     def __str__(self):
@@ -44,6 +46,9 @@ class Project(models.Model):
     demo_link = models.URLField(blank=True, null=True)
     image = models.CharField(max_length=255, default="img/blank-folder.svg")
     ended_at = models.DateField(null=True, blank=True)
+    starred_by = models.ManyToManyField(
+        User, related_name="starred_projects", blank=True
+    )
 
     def __str__(self):
         return self.title
@@ -58,6 +63,9 @@ class BlogPost(models.Model):
     content = models.TextField()
     date_posted = models.DateField(auto_now_add=True)
     read_time = models.IntegerField(help_text="Read time in minutes")
+    starred_by = models.ManyToManyField(
+        User, related_name="starred_blogs", blank=True
+    )
     
     def __str__(self):
         return self.title
