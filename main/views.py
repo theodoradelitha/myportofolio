@@ -187,7 +187,9 @@ def update_blog(request, blog_id):
 
 def get_blogs_json(request):
     blogs = BlogPost.objects.all().order_by('-date_posted')
-    blogs_json = serializers.serialize("json", blogs)
+    blogs_json = serializers.serialize(
+        "json", blogs, use_natural_foreign_keys=True
+    )
     return HttpResponse(blogs_json, content_type="application/json")
 
 @login_required(login_url="/login/") 
@@ -243,7 +245,9 @@ def get_projects_json(request):
     if title_query:
         projects = projects.filter(title__icontains=title_query)
 
-    projects_json = serializers.serialize("json", projects)
+    projects_json = serializers.serialize(
+        "json", projects, use_natural_foreign_keys=True
+    )
     return HttpResponse(projects_json, content_type="application/json")
 
 @login_required(login_url="/login/") 
