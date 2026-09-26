@@ -9,7 +9,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 import datetime
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import PermissionDeniad
+from django.core.exceptions import PermissionDenied
 
 def show_main(request):
     last_login = request.COOKIES.get('last_login', 'No active login session / Cookie not found')
@@ -53,6 +53,8 @@ def create_experience(request):
     Processes POST data through the ExperienceForm and redirects 
     on success, or renders the empty/invalid form on GET/failure.
     """
+    if not request.user.is_superuser:
+        raise PermissionDenied
     form = ExperienceForm(request.POST or None)
 
     if request.method == "POST" and form.is_valid():
@@ -71,6 +73,8 @@ def update_experience(request, exp_id):
     Handles updating an existing Experience entry by its UUID.
     Pre-fills the ExperienceForm with the instance's current data.
     """
+    if not request.user.is_superuser:
+        raise PermissionDenied
     experience = get_object_or_404(Experience, pk=exp_id)
     form = ExperienceForm(request.POST or None, instance=experience)
 
@@ -101,6 +105,8 @@ def delete_experience(request, exp_id):
     Requires a POST request (typically via a confirmation modal form) 
     to execute the deletion.
     """
+    if not request.user.is_superuser:
+        raise PermissionDenied
     experience = get_object_or_404(Experience, pk=exp_id)
 
     if request.method == "POST":
@@ -150,6 +156,8 @@ def show_blog(request):
 
 @login_required(login_url="/login/")
 def create_blog(request):
+    if not request.user.is_superuser:
+        raise PermissionDenied
     form = BlogForm(request.POST or None)
 
     if request.method == "POST" and form.is_valid():
@@ -184,6 +192,8 @@ def get_blogs_json(request):
 
 @login_required(login_url="/login/") 
 def delete_blog(request, blog_id):
+    if not request.user.is_superuser:
+        raise PermissionDenied
     blog = get_object_or_404(BlogPost, pk=blog_id)
 
     if request.method == "POST":
@@ -195,6 +205,8 @@ def delete_blog(request, blog_id):
 
 @login_required(login_url="/login/")
 def create_project(request):
+    if not request.user.is_superuser:
+        raise PermissionDenied
     form = ProjectForm(request.POST or None)
 
     if request.method == "POST" and form.is_valid():
@@ -236,6 +248,8 @@ def get_projects_json(request):
 
 @login_required(login_url="/login/") 
 def delete_project(request, project_id):
+    if not request.user.is_superuser:
+        raise PermissionDenied
     project = get_object_or_404(Project, pk=project_id)
 
     if request.method == "POST":
