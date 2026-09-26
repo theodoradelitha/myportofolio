@@ -8,6 +8,8 @@ from django.core import serializers
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 import datetime
+from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDeniad
 
 def show_main(request):
     last_login = request.COOKIES.get('last_login', 'No active login session / Cookie not found')
@@ -44,6 +46,7 @@ def show_experience(request):
     }
     return render(request, "components/experience.html", context)
 
+@login_required(login_url="/login/")
 def create_experience(request):
     """
     Handles the creation of a new Experience entry.
@@ -62,6 +65,7 @@ def create_experience(request):
     }
     return render(request, "forms/experience_form.html", context)
 
+@login_required(login_url="/login/") 
 def update_experience(request, exp_id):
     """
     Handles updating an existing Experience entry by its UUID.
@@ -90,6 +94,7 @@ def get_experience_json(request):
     experiences_json = serializers.serialize("json", experiences)
     return HttpResponse(experiences_json, content_type="application/json")
 
+@login_required(login_url="/login/") 
 def delete_experience(request, exp_id):
     """
     Handles the deletion of a specific Experience entry by its UUID.
@@ -143,6 +148,7 @@ def show_blog(request):
     }
     return render(request, "components/blog.html", context)
 
+@login_required(login_url="/login/")
 def create_blog(request):
     form = BlogForm(request.POST or None)
 
@@ -176,6 +182,7 @@ def get_blogs_json(request):
     blogs_json = serializers.serialize("json", blogs)
     return HttpResponse(blogs_json, content_type="application/json")
 
+@login_required(login_url="/login/") 
 def delete_blog(request, blog_id):
     blog = get_object_or_404(BlogPost, pk=blog_id)
 
@@ -186,6 +193,7 @@ def delete_blog(request, blog_id):
 
     return redirect("main:show_blog")
 
+@login_required(login_url="/login/")
 def create_project(request):
     form = ProjectForm(request.POST or None)
 
@@ -226,6 +234,7 @@ def get_projects_json(request):
     projects_json = serializers.serialize("json", projects)
     return HttpResponse(projects_json, content_type="application/json")
 
+@login_required(login_url="/login/") 
 def delete_project(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
 
