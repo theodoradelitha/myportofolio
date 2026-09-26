@@ -10,6 +10,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 import datetime
 
 def show_main(request):
+    last_login = request.COOKIES.get('last_login', 'No active login session / Cookie not found')
     context = {
         "name": "Delitha Theodora",
         "npm": "2506553585",
@@ -18,7 +19,8 @@ def show_main(request):
             "Hi, I'm Delitha Theodora! I'm a CS student at Universitas Indonesia focused on "
             "frontend engineering (Next.js) and UI/UX design (Figma). I build intuitive, responsive web "
             "applications as a stepping stone toward my ultimate goal: a career in cybersecurity."
-        )
+        ),
+        "last_login": last_login,
     }
     return render(request, "index.html", context)
 
