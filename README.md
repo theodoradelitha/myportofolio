@@ -170,3 +170,36 @@ While the AI was excellent at explaining Django backend logic, it lacked the hol
 *   my edit and delete buttons are completely invisible on the project cards lmao
 *   whats a great way for me to organize the overflowing navbar in mobile?
 *   what are the best practices for git commit messages?
+
+---
+
+### Weekly Progress Update (Week 4 / Assignment 4)
+* **Week 4 (Assignment 4):** Integrated Django's built-in authentication system. Implemented login, registration, and logout functionalities with proper session and cookie management. Established role-based access control by enforcing server-side permissions (`has_perm`) and conditionally rendering UI action buttons (`perms`) for Superusers and a custom "Editor" group. Finally, added an interactive ManyToMany "Star" feature for Projects and Blogs, ensuring JSON endpoints securely use natural foreign keys.
+
+---
+
+### AI Disclosure & Reflection (Assignment 4)
+
+**1. Tools Used:** Gemini
+
+**2. Prompting Strategy:**
+For this assignment, my prompt strategy shifted towards architecture and access control theory. Rather than asking the AI to write the authentication views (which I implemented myself following the tutorial), I used the AI to understand how to extend the standard authentication flow into a Role-Based Access Control (RBAC) system. I focused my prompts on learning how Django's permission framework interacts with templates and how to securely manage ManyToMany database relationships without leaking sensitive user IDs in my API.
+
+**3. Specific Assisted Parts:**
+* **Role-Based Access Control (RBAC):** I struggled with how to check for an "Editor" role. The AI explained the difference between checking `request.user.groups` and using `request.user.has_perm()`. I then manually wrote the `has_perm` conditions in my `views.py` and the `{% if perms... %}` logic across all my HTML templates.
+* **Security & JSON APIs:** When my `starred_by` feature started leaking raw User IDs in the `/api/projects/` endpoint, I asked the AI why that was happening. It pointed out the need for natural foreign keys, and I manually added `use_natural_foreign_keys=True` to my serializer parameters.
+* **Many-To-Many Operations:** I consulted the AI to understand the syntax for adding and removing objects from a ManyToMany relationship (like `.add()` and `.remove()`), which I then used to structure my own `toggle_star` view.
+
+**4. Critical Analysis of AI Limitations & Manual Fixes:**
+* **Context Blindness in Templates:** When I asked the AI conceptual questions about template tags (like how to hide buttons based on permissions), it provided generic `{% if %}` block examples that completely ignored my specific UI structure and CSS classes. I couldn't just copy-paste; I had to carefully manually integrate the logic into my complex flexbox layout so the design wouldn't break.
+* **Overcomplicating Simple Tasks:** When I first asked how to implement the "Editor" role, the AI suggested I build custom template tags and complex middleware. I had to critically evaluate its suggestion, realize it was massive overkill for this assignment, and guide the AI back to explaining the simpler, built-in Django `Permissions` framework.
+* **Security Oversights in Examples:** When the AI explained how to structure update and delete views based on permissions, its examples lacked the `@login_required` decorators. If I had blindly followed its examples, unauthenticated visitors would have triggered unhandled 403 errors instead of being safely redirected to the login page. I had to manually audit my code and add those decorators myself.
+
+**5. Prompting History/Log:**
+* *how do i make a registration form using django's built-in UserCreationForm?*
+* *i followed the tutorial for login but where do i set the cookie to store the last login time?*
+* *my logout button is redirecting me to an error page, what url name should i use for it in urls.py?*
+* *if i have a manytomanyfield for stars, how do i count how many people starred it in the html template?*
+* *how do i check if a user is logged in inside my html file so i can hide the star button for guests?*
+* *Test Unauthenticated Visitor: Try to open /projects/add/ but i get a 403 forbidden instead of a redirect. am i actually still logged in?*
+* *my api is showing [1, 2] for starred_by, how do i make it show the actual usernames instead in get_projects_json?*
