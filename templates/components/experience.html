@@ -7,7 +7,7 @@
             <p class="section-kicker">My journey so far</p>
             <div class="blog-header-controls">
                 <h1 style="margin-bottom: 0;">Experience</h1>
-                {% if user.is_superuser %}
+                {% if perms.main.add_experience %}
                 <a href="{% url 'main:create_experience' %}" class="button">
                     <span aria-hidden="true">+</span> Add Experience
                 </a>
@@ -32,7 +32,7 @@
                         {% endif %}
                         
                         <div class="experience-actions" style="margin-top: 1.5rem; display: flex; gap: 10px; align-items: center;">
-                            {% if user.is_superuser %}
+                            {% if perms.main.change_experience %}
                                 <a href="{% url 'main:update_experience' experience.id %}" class="button button-secondary">Edit Experience</a>
                                 {% include "components/experience_delete_modal.html" with experience=experience %}
                             {% endif %}
