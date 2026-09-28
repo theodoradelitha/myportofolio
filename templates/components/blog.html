@@ -13,7 +13,7 @@
     <div class="container">
         <div class="blog-header-controls">
             <h2 class="blog-main-title" style="margin-bottom: 0;">Dev Diary</h2>
-            {% if user.is_superuser %}
+            {% if perms.main.add_blogpost %}
             <a href="{% url 'main:create_blog' %}" class="button">
                 <span aria-hidden="true">+</span> Add Post
             </a>
@@ -33,7 +33,7 @@
                     {% if user.is_authenticated %}
                         {% include "components/blog_star.html" with post=post %}
                     {% endif %}
-                    {% if user.is_superuser %}
+                    {% if perms.main.change_blogpost %}
                         <a href="{% url 'main:update_blog' post.id %}" class="button button-secondary">Edit Post</a>
                         {% include "components/blog_delete_modal.html" with post=post %}
                     {% endif %}
