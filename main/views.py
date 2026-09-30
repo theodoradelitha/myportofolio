@@ -122,6 +122,7 @@ def show_projects(request):
     context = {
         "name": "Delitha",
         "title_query": title_query,
+        "form": ProjectForm(),
     }
     return render(request, "components/projects.html", context)
 
