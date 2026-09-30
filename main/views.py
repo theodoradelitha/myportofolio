@@ -118,14 +118,9 @@ def delete_experience(request, exp_id):
 
 def show_projects(request):
     title_query = request.GET.get("title", "").strip()
-    projects = Project.objects.all()
-
-    if title_query:
-        projects = projects.filter(title__icontains=title_query)
 
     context = {
         "name": "Delitha",
-        "projects_list": projects,
         "title_query": title_query,
     }
     return render(request, "components/projects.html", context)
@@ -248,7 +243,6 @@ def get_projects_json(request):
     if title_query:
         projects = projects.filter(title__icontains=title_query)
 
-    # Manually build the JSON data so we can add the Star logic
     data = []
     for project in projects:
         starred_users = project.starred_by.all()
