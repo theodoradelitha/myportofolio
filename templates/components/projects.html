@@ -117,6 +117,16 @@
         }
     }
 
+    // Convert special HTML characters into entities so they display as text[cite: 1]
+    function escapeHtml(value) {
+        return String(value ?? '')
+            .replaceAll('&', '&amp;')
+            .replaceAll('<', '&lt;')
+            .replaceAll('>', '&gt;')
+            .replaceAll('"', '&quot;')
+            .replaceAll("'", '&#39;');
+    }
+
     // Build a project card element
     function buildProjectCardElement(item) {
         const project = item.fields;
@@ -125,8 +135,9 @@
         const slideElement = document.createElement('div');
         slideElement.className = 'swiper-slide';
 
-        const demoLink = project.demo_link ? project.demo_link : '#';
-        const imageSrc = project.image ? `{% static '' %}${project.image}` : `{% static 'img/blank-folder.svg' %}`;
+        // Wrap every text value inserted into HTML with escapeHtml[cite: 1, 2]
+        const demoLink = project.demo_link ? escapeHtml(project.demo_link) : '#';
+        const imageSrc = project.image ? `{% static '' %}${escapeHtml(project.image)}` : `{% static 'img/blank-folder.svg' %}`;
 
         const deleteUrl = "{% url 'main:delete_project' '00000000-0000-0000-0000-000000000000' %}".replace('00000000-0000-0000-0000-000000000000', projectId);
         const editUrl = "{% url 'main:update_project' '00000000-0000-0000-0000-000000000000' %}".replace('00000000-0000-0000-0000-000000000000', projectId);
@@ -137,10 +148,10 @@
                 {% csrf_token %}
                 <button type="submit" 
                         class="button button-star${project.is_starred ? " is-starred" : ""}"
-                        title="${project.star_count > 0 ? 'Starred by ' + project.starred_by_names : 'Be the first to star'}">
+                        title="${project.star_count > 0 ? 'Starred by ' + escapeHtml(project.starred_by_names) : 'Be the first to star'}">
                     <span aria-hidden="true">★</span>
                     ${project.is_starred ? "Unstar" : "Star"}
-                    <span class="star-count">${project.star_count}</span>
+                    <span class="star-count">${escapeHtml(project.star_count)}</span>
                 </button>
             </form>` : '';
 
@@ -159,7 +170,7 @@
                         <img src="{% static 'img/projects-star.svg' %}" alt="*" class="star-small">
                     </div>
                     <h3 class="project-title">
-                        <a href="${demoLink}" target="_blank">${project.title}</a>
+                        <a href="${demoLink}" target="_blank">${escapeHtml(project.title)}</a>
                     </h3>
                     <div class="stars-right">
                         <img src="{% static 'img/projects-star.svg' %}" alt="*" class="star-small">
@@ -168,14 +179,14 @@
                 </div>
                 <div class="project-card-body">
                     <div class="project-image-placeholder">
-                        <img src="${imageSrc}" alt="${project.title}" class="project-image">
+                        <img src="${imageSrc}" alt="${escapeHtml(project.title)}" class="project-image">
                     </div>
                     <div class="project-info">
                         <h4 class="project-subtitle">About</h4>
-                        <p class="project-desc">${project.description}</p>
+                        <p class="project-desc">${escapeHtml(project.description)}</p>
                         <h4 class="project-tech-title">Tech Stack</h4>
                         <ul class="project-tech-list">
-                            <li>${project.tech_stack}</li>
+                            <li>${escapeHtml(project.tech_stack)}</li>
                         </ul>
                         <div class="project-actions" style="margin-top: 1rem; display: flex; gap: 10px; align-items: center;">
                             ${starFormHtml}
