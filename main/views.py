@@ -1,3 +1,4 @@
+from django.views.decorators.http import require_POST
 from django.shortcuts import render, redirect
 from main.forms import ProjectForm, BlogForm, ExperienceForm
 from main.models import Experience, Project, BlogPost
@@ -334,3 +335,21 @@ def toggle_star_blog(request, blog_id):
         else:
             blog.starred_by.add(request.user)
     return redirect("main:show_blog")
+
+@require_POST
+def create_project_ajax(request):
+    if not request.user.has_perm('main.add_project'):
+        return JsonResponse(
+            {"message": "Only the portfolio owner can add projects."},
+            status=403,
+        )
+
+    form = ProjectForm(request.POST)
+    if form.is_valid():
+        project = form.save()
+        return JsonResponse(
+            {"message": "Project added successfully.", "pk": str(project.id)},
+            status=201,
+        )
+
+    return JsonResponse({"errors": form.errors.get_json_data()}, status=400)
