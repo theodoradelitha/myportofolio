@@ -18,9 +18,14 @@
         <h2 class="section-title text-center">My Projects</h2>
 
         <div class="project-controls-row">
-            <form method="get" action="{% url 'main:show_projects' %}" class="project-search">
-                <input type="search" name="title" value="{{ title_query }}" placeholder="Search project name..."
-                    class="project-search__input" aria-label="Search by project name">
+            <form id="project-search-form" class="project-search">
+                <input type="search"
+                       id="search-input"
+                       name="title"
+                       value="{{ title_query }}"
+                       placeholder="Search project name..."
+                       class="project-search__input"
+                       aria-label="Search by project name">
                 <button type="submit" class="button">Search</button>
             </form>
 
@@ -45,79 +50,25 @@
 
             <!-- Folder Content -->
             <div class="folder-content">
+                <!-- Loading State -->
+                <div id="loading" class="empty-state hide">
+                    <p>Loading projects...</p>
+                </div>
+
+                <!-- Error State -->
+                <div id="error" class="empty-state hide">
+                    <p>Failed to load project data. Please try again.</p>
+                </div>
+
+                <!-- Empty State -->
+                <div id="empty" class="empty-state hide">
+                    <p>No projects have been added or found yet.</p>
+                </div>
+
                 <!-- Swiper -->
                 <div class="swiper projectsSwiper">
-                    <div class="swiper-wrapper">
-
-                        {% for project in projects_list %}
-                        <!-- Dynamic Slide -->
-                        <div class="swiper-slide">
-                            <div class="project-card">
-                                <div class="project-card-header">
-                                    <div class="stars-left">
-                                        <img src="{% static 'img/projects-star.svg' %}" alt="*" class="star-large">
-                                        <img src="{% static 'img/projects-star.svg' %}" alt="*" class="star-small">
-                                    </div>
-                                    <h3 class="project-title">
-                                        <a href="{% if project.demo_link %}{{ project.demo_link }}{% else %}#{% endif %}"
-                                            target="_blank">
-                                            {{ project.title }}
-                                        </a>
-                                    </h3>
-                                    <div class="stars-right">
-                                        <img src="{% static 'img/projects-star.svg' %}" alt="*" class="star-small">
-                                        <img src="{% static 'img/projects-star.svg' %}" alt="*" class="star-large">
-                                    </div>
-                                </div>
-
-                                <div class="project-card-body">
-                                    <div class="project-image-placeholder">
-                                        <img src="{% static project.image %}" alt="{{ project.title }}"
-                                            class="project-image">
-                                    </div>
-
-                                    <div class="project-info">
-                                        <h4 class="project-subtitle">About</h4>
-                                        <p class="project-desc">{{ project.description }}</p>
-
-                                        <h4 class="project-tech-title">Tech Stack</h4>
-                                        <ul class="project-tech-list">
-                                            <li>{{ project.tech_stack }}</li>
-                                        </ul>
-
-                                        <!-- Actions (Star, Edit, Delete) -->
-                                        <div class="project-actions" style="margin-top: 1rem; display: flex; gap: 10px; align-items: center;">
-                                            {% if user.is_authenticated %}
-                                                {% include "components/project_star.html" with project=project %}
-                                            {% endif %}
-                                            {% if perms.main.change_project %}
-                                                <a href="{% url 'main:update_project' project.id %}"
-                                                    class="button button-secondary">Edit Project</a>
-                                                {% include "components/project_delete_modal.html" with project=project %}
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        {% empty %}
-
-                        <div class="swiper-slide">
-                            <div class="project-card"
-                                style="display: flex; justify-content: center; align-items: center; min-height: 300px;">
-                                {% if title_query %}
-                                <p class="empty-state" style="color: var(--text-muted); font-weight: 500;">
-                                    No projects found matching "{{ title_query }}".
-                                </p>
-                                {% else %}
-                                <p class="empty-state" style="color: var(--text-muted); font-weight: 500;">
-                                    No projects have been added yet.
-                                </p>
-                                {% endif %}
-                            </div>
-                        </div>
-                        {% endfor %}
-
+                    <!-- Project Grid / Swiper Wrapper -->
+                    <div id="grid" class="swiper-wrapper">
                     </div>
                     <!-- Pagination -->
                     <div class="swiper-pagination"></div>
@@ -134,34 +85,192 @@
 </section>
 
 <script>
+    // Configuration
+    const BASE_PROJECTS_ENDPOINT = "{% url 'main:get_projects_json' %}";
+    const CAN_CHANGE = "{{ perms.main.change_project|yesno:'true,false' }}" === "true";
+    const IS_AUTHENTICATED = "{{ user.is_authenticated|yesno:'true,false' }}" === "true";
+    let projectsAbortController;
+
+    // DOM elements
+    const loadingState = document.getElementById('loading');
+    const errorState = document.getElementById('error');
+    const emptyState = document.getElementById('empty');
+    const gridContainer = document.getElementById('grid');
+    const searchForm = document.getElementById('project-search-form');
+    const searchInput = document.getElementById('search-input');
+    const swiperContainer = document.querySelector('.projectsSwiper');
+
+    // Show/hide page sections
+    function displayPageSection({ showLoading = false, showError = false, showEmpty = false, showGrid = false }) {
+        if(loadingState) loadingState.classList.toggle('hide', !showLoading);
+        if(errorState) errorState.classList.toggle('hide', !showError);
+        if(emptyState) emptyState.classList.toggle('hide', !showEmpty);
+        if(gridContainer) gridContainer.classList.toggle('hide', !showGrid);
+        
+        // Hide/show the swiper container appropriately
+        if (swiperContainer) {
+            swiperContainer.style.display = showGrid ? 'block' : 'none';
+        }
+    }
+
+    // Build a project card element
+    function buildProjectCardElement(item) {
+        const project = item.fields;
+        const projectId = item.pk;
+
+        const slideElement = document.createElement('div');
+        slideElement.className = 'swiper-slide';
+
+        const demoLink = project.demo_link ? project.demo_link : '#';
+        const imageSrc = project.image ? `{% static '' %}${project.image}` : `{% static 'img/blank-folder.svg' %}`;
+        
+        const deleteUrl = "{% url 'main:delete_project' '00000000-0000-0000-0000-000000000000' %}".replace('00000000-0000-0000-0000-000000000000', projectId);
+        const editUrl = "{% url 'main:update_project' '00000000-0000-0000-0000-000000000000' %}".replace('00000000-0000-0000-0000-000000000000', projectId);
+        const starUrl = "{% url 'main:toggle_star_project' '00000000-0000-0000-0000-000000000000' %}".replace('00000000-0000-0000-0000-000000000000', projectId);
+
+        const starFormHtml = IS_AUTHENTICATED ? `
+            <form method="post" action="${starUrl}" class="star-form" style="display: inline-block;">
+                {% csrf_token %}
+                <button type="submit" 
+                        class="button button-star${project.is_starred ? " is-starred" : ""}"
+                        title="${project.star_count > 0 ? 'Starred by ' + project.starred_by_names : 'Be the first to star'}">
+                    <span aria-hidden="true">★</span>
+                    ${project.is_starred ? "Unstar" : "Star"}
+                    <span class="star-count">${project.star_count}</span>
+                </button>
+            </form>` : '';
+
+        const manageHtml = CAN_CHANGE ? `
+            <a href="${editUrl}" class="button button-secondary">Edit Project</a>
+            <form method="post" action="${deleteUrl}" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="button button-danger" onclick="return confirm('Are you sure you want to delete this project?');">Delete</button>
+            </form>` : '';
+
+        const completeCardHtml = `
+            <div class="project-card">
+                <div class="project-card-header">
+                    <div class="stars-left">
+                        <img src="{% static 'img/projects-star.svg' %}" alt="*" class="star-large">
+                        <img src="{% static 'img/projects-star.svg' %}" alt="*" class="star-small">
+                    </div>
+                    <h3 class="project-title">
+                        <a href="${demoLink}" target="_blank">${project.title}</a>
+                    </h3>
+                    <div class="stars-right">
+                        <img src="{% static 'img/projects-star.svg' %}" alt="*" class="star-small">
+                        <img src="{% static 'img/projects-star.svg' %}" alt="*" class="star-large">
+                    </div>
+                </div>
+                <div class="project-card-body">
+                    <div class="project-image-placeholder">
+                        <img src="${imageSrc}" alt="${project.title}" class="project-image">
+                    </div>
+                    <div class="project-info">
+                        <h4 class="project-subtitle">About</h4>
+                        <p class="project-desc">${project.description}</p>
+                        <h4 class="project-tech-title">Tech Stack</h4>
+                        <ul class="project-tech-list">
+                            <li>${project.tech_stack}</li>
+                        </ul>
+                        <div class="project-actions" style="margin-top: 1rem; display: flex; gap: 10px; align-items: center;">
+                            ${starFormHtml}
+                            ${manageHtml}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        slideElement.innerHTML = completeCardHtml;
+        return slideElement;
+    }
+
+    // Initialize/Re-initialize Swiper
+    let projectSwiperInstance = null;
+    function initOrUpdateSwiper() {
+        if (projectSwiperInstance) {
+            projectSwiperInstance.update();
+        } else {
+            projectSwiperInstance = new Swiper(".projectsSwiper", {
+                loop: false,
+                grabCursor: true,
+                spaceBetween: 50,
+                pagination: {
+                    el: ".swiper-pagination",
+                    clickable: true,
+                },
+                navigation: {
+                    nextEl: ".swiper-button-next",
+                    prevEl: ".swiper-button-prev",
+                },
+                observer: true,
+                observeParents: true,
+            });
+        }
+    }
+
+    // Fetch project data
+    async function fetchProjects(searchQuery = "") {
+        if (projectsAbortController) projectsAbortController.abort();
+        projectsAbortController = new AbortController();
+
+        try {
+            displayPageSection({ showLoading: true });
+            
+            const url = searchQuery ? `${BASE_PROJECTS_ENDPOINT}?title=${encodeURIComponent(searchQuery)}` : BASE_PROJECTS_ENDPOINT;
+            
+            const response = await fetch(url, {
+                headers: { 'Accept': 'application/json' },
+                signal: projectsAbortController.signal,
+            });
+
+            if (!response.ok) throw new Error('Failed to fetch data');
+
+            const projectData = await response.json();
+
+            if (projectData.length === 0) {
+                displayPageSection({ showEmpty: true });
+            } else {
+                if(gridContainer) gridContainer.innerHTML = '';
+                projectData.forEach(item => {
+                    gridContainer.appendChild(buildProjectCardElement(item));
+                });
+                displayPageSection({ showGrid: true });
+                
+                // Re-initialize swiper after DOM updates
+                initOrUpdateSwiper();
+            }
+        } catch (error) {
+            if (error.name === 'AbortError') return;
+            console.error('Error loading projects:', error);
+            displayPageSection({ showError: true });
+        }
+    }
+
+    // Search form event handler
+    if (searchForm) {
+        searchForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            fetchProjects(searchInput ? searchInput.value.trim() : "");
+        });
+    }
+
+    // Run when DOM is ready
     document.addEventListener("DOMContentLoaded", function () {
         // Folder open animation
         const folder = document.getElementById("projects-folder");
         if (folder) {
             folder.addEventListener("click", function (e) {
-                // Prevent folder click from triggering if clicking the search bar or buttons
                 if (e.target.closest('.project-header-controls')) return;
-
                 if (!this.classList.contains("is-open")) {
                     this.classList.add("is-open");
                 }
             });
         }
 
-        // Initialize Swiper
-        const swiper = new Swiper(".projectsSwiper", {
-            loop: false, // Set to false to prevent issues if there's only 1 project or an empty state
-            grabCursor: true,
-            spaceBetween: 50,
-            pagination: {
-                el: ".swiper-pagination",
-                clickable: true,
-            },
-            navigation: {
-                nextEl: ".swiper-button-next",
-                prevEl: ".swiper-button-prev",
-            },
-        });
+        // Fetch Initial Data
+        fetchProjects(searchInput ? searchInput.value.trim() : "");
     });
 </script>
 {% endblock content %}
