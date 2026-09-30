@@ -1,3 +1,5 @@
+from django.core.exceptions import ValidationError
+from django.utils.html import strip_tags
 from django.forms.models import ModelForm
 from django.forms.widgets import TextInput, Textarea, URLInput
 
@@ -52,6 +54,7 @@ class ProjectForm(ModelForm):
                 }
             ),
         }
+    
 
 class BlogForm(ModelForm):
     class Meta:
