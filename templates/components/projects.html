@@ -100,6 +100,8 @@
     const searchInput = document.getElementById('search-input');
     const swiperContainer = document.querySelector('.projectsSwiper');
 
+    const SEARCH_DEBOUNCE_DELAY = 300;
+    let searchDebounceTimer;
     // Show/hide page sections
     function displayPageSection({ showLoading = false, showError = false, showEmpty = false, showGrid = false }) {
         if(loadingState) loadingState.classList.toggle('hide', !showLoading);
@@ -248,11 +250,25 @@
         }
     }
 
+    function searchProjects() {
+        if (searchInput) fetchProjects(searchInput.value.trim());
+    }
+
+    if (searchInput) {
+        searchInput.addEventListener("input", function() {
+            clearTimeout(searchDebounceTimer);
+            searchDebounceTimer = setTimeout(function() {
+                searchProjects();
+            }, SEARCH_DEBOUNCE_DELAY);
+        });
+    }
+
     // Search form event handler
     if (searchForm) {
-        searchForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            fetchProjects(searchInput ? searchInput.value.trim() : "");
+        searchForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            clearTimeout(searchDebounceTimer);
+            searchProjects();
         });
     }
 
