@@ -24,6 +24,10 @@
                 <button type="submit" class="button">Search</button>
             </form>
 
+            <button class="button button-secondary" onclick="showToast('System Notification', 'Project loaded successfully!', 'success')">
+                Test Toast Notification
+            </button>
+
             {% if perms.main.add_project %}  
                 <a href="{% url 'main:create_project' %}"
                 class="button project-add-button">
