@@ -19,28 +19,23 @@
 
         <div class="project-controls-row">
             <form id="project-search-form" class="project-search">
-                <input type="search"
-                       id="search-input"
-                       name="title"
-                       value="{{ title_query }}"
-                       placeholder="Search project name..."
-                       class="project-search__input"
-                       aria-label="Search by project name">
+                <input type="search" id="search-input" name="title" value="{{ title_query }}"
+                    placeholder="Search project name..." class="project-search__input"
+                    aria-label="Search by project name">
                 <button type="submit" class="button">Search</button>
             </form>
 
-            <button class="button button-secondary" onclick="showToast('System Notification', 'Project loaded successfully!', 'success')">
+            <button class="button button-secondary"
+                onclick="showToast('System Notification', 'Project loaded successfully!', 'success')">
                 Test Toast Notification
             </button>
 
-            {% if perms.main.add_project %}  
-                <button type="button" 
-                        class="button project-add-button" 
-                        popovertarget="add-project-modal">
-                    <span aria-hidden="true">+</span>
-                    Add Project
-                </button>
-            {% endif %}                
+            {% if perms.main.add_project %}
+            <button type="button" class="button project-add-button" popovertarget="add-project-modal">
+                <span aria-hidden="true">+</span>
+                Add Project
+            </button>
+            {% endif %}
         </div>
     </div>
 
@@ -86,12 +81,13 @@
 </section>
 
 {% if perms.main.add_project %}
-    {% include "components/project_form_modal.html" %}
+{% include "components/project_form_modal.html" %}
 {% endif %}
 
 <script>
     // Configuration
     const BASE_PROJECTS_ENDPOINT = "{% url 'main:get_projects_json' %}";
+    const CREATE_PROJECT_ENDPOINT = "{% url 'main:create_project_ajax' %}";
     const CAN_CHANGE = "{{ perms.main.change_project|yesno:'true,false' }}" === "true";
     const IS_AUTHENTICATED = "{{ user.is_authenticated|yesno:'true,false' }}" === "true";
     let projectsAbortController;
@@ -104,17 +100,18 @@
     const searchForm = document.getElementById('project-search-form');
     const searchInput = document.getElementById('search-input');
     const swiperContainer = document.querySelector('.projectsSwiper');
+    const projectForm = document.getElementById('project-form');
 
     const SEARCH_DEBOUNCE_DELAY = 300;
     let searchDebounceTimer;
+
     // Show/hide page sections
     function displayPageSection({ showLoading = false, showError = false, showEmpty = false, showGrid = false }) {
-        if(loadingState) loadingState.classList.toggle('hide', !showLoading);
-        if(errorState) errorState.classList.toggle('hide', !showError);
-        if(emptyState) emptyState.classList.toggle('hide', !showEmpty);
-        if(gridContainer) gridContainer.classList.toggle('hide', !showGrid);
-        
-        // Hide/show the swiper container appropriately
+        if (loadingState) loadingState.classList.toggle('hide', !showLoading);
+        if (errorState) errorState.classList.toggle('hide', !showError);
+        if (emptyState) emptyState.classList.toggle('hide', !showEmpty);
+        if (gridContainer) gridContainer.classList.toggle('hide', !showGrid);
+
         if (swiperContainer) {
             swiperContainer.style.display = showGrid ? 'block' : 'none';
         }
@@ -130,7 +127,7 @@
 
         const demoLink = project.demo_link ? project.demo_link : '#';
         const imageSrc = project.image ? `{% static '' %}${project.image}` : `{% static 'img/blank-folder.svg' %}`;
-        
+
         const deleteUrl = "{% url 'main:delete_project' '00000000-0000-0000-0000-000000000000' %}".replace('00000000-0000-0000-0000-000000000000', projectId);
         const editUrl = "{% url 'main:update_project' '00000000-0000-0000-0000-000000000000' %}".replace('00000000-0000-0000-0000-000000000000', projectId);
         const starUrl = "{% url 'main:toggle_star_project' '00000000-0000-0000-0000-000000000000' %}".replace('00000000-0000-0000-0000-000000000000', projectId);
@@ -224,9 +221,9 @@
 
         try {
             displayPageSection({ showLoading: true });
-            
+
             const url = searchQuery ? `${BASE_PROJECTS_ENDPOINT}?title=${encodeURIComponent(searchQuery)}` : BASE_PROJECTS_ENDPOINT;
-            
+
             const response = await fetch(url, {
                 headers: { 'Accept': 'application/json' },
                 signal: projectsAbortController.signal,
@@ -239,13 +236,12 @@
             if (projectData.length === 0) {
                 displayPageSection({ showEmpty: true });
             } else {
-                if(gridContainer) gridContainer.innerHTML = '';
+                if (gridContainer) gridContainer.innerHTML = '';
                 projectData.forEach(item => {
                     gridContainer.appendChild(buildProjectCardElement(item));
                 });
                 displayPageSection({ showGrid: true });
-                
-                // Re-initialize swiper after DOM updates
+
                 initOrUpdateSwiper();
             }
         } catch (error) {
@@ -260,17 +256,16 @@
     }
 
     if (searchInput) {
-        searchInput.addEventListener("input", function() {
+        searchInput.addEventListener("input", function () {
             clearTimeout(searchDebounceTimer);
-            searchDebounceTimer = setTimeout(function() {
+            searchDebounceTimer = setTimeout(function () {
                 searchProjects();
             }, SEARCH_DEBOUNCE_DELAY);
         });
     }
 
-    // Search form event handler
     if (searchForm) {
-        searchForm.addEventListener('submit', function(event) {
+        searchForm.addEventListener('submit', function (event) {
             event.preventDefault();
             clearTimeout(searchDebounceTimer);
             searchProjects();
@@ -281,9 +276,62 @@
         document.getElementById("add-project-modal").hidePopover();
     }
 
+    // Read a cookie value, used to get the CSRF token
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    // Send the form data to the server
+    async function addProject(event) {
+        event.preventDefault();
+
+        const submitButton = projectForm.querySelector('button[type="submit"]');
+        submitButton.disabled = true;
+
+        try {
+            const response = await fetch(CREATE_PROJECT_ENDPOINT, {
+                method: 'POST',
+                headers: { 'X-CSRFToken': getCookie('csrftoken') },
+                body: new FormData(projectForm),
+            });
+            const result = await response.json().catch(() => ({}));
+
+            if (response.ok) {
+                projectForm.reset();
+                closeProjectModal();
+                showToast('Success', 'New project added successfully!', 'success');
+                fetchProjects(searchInput.value.trim());
+            } else {
+                const errorMessages = result.errors
+                    ? Object.values(result.errors).flat().map(error => error.message)
+                    : [result.message || `Something went wrong (status ${response.status}).`];
+                showToast('Failed to add project', errorMessages.join(' '), 'error');
+            }
+        } catch (error) {
+            console.error('Error adding project:', error);
+            showToast('Failed to add project', 'Could not reach the server. Please try again.', 'error');
+        } finally {
+            submitButton.disabled = false;
+        }
+    }
+
+    if (projectForm) {
+        projectForm.addEventListener('submit', addProject);
+    }
+
     // Run when DOM is ready
     document.addEventListener("DOMContentLoaded", function () {
-        // Folder open animation
         const folder = document.getElementById("projects-folder");
         if (folder) {
             folder.addEventListener("click", function (e) {
@@ -294,7 +342,6 @@
             });
         }
 
-        // Fetch Initial Data
         fetchProjects(searchInput ? searchInput.value.trim() : "");
     });
 </script>
