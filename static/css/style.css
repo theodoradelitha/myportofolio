@@ -1781,9 +1781,9 @@ h3 {
     align-items: center;
     gap: 1rem;
     transition: all 0.3s ease;
-    background-color: var(--paper);
-    border: 1px solid var(--line);
-    color: inherit;
+    background-color: var(--cream);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    color: var(--maroon-main);
 }
 
 .toast-component:popover-open {
@@ -1810,7 +1810,7 @@ h3 {
 
 .toast-message {
     font-size: 0.85rem;
-    color: var(--text-muted);
+    color: var(--maroon-muted);
 }
 
 /* Change the left border based on the notification type */
