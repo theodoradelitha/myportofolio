@@ -80,6 +80,15 @@ def update_experience(request, exp_id):
     return render(request, "forms/experience_form.html", context)
 
 def get_experience_json(request):
+    """
+    API endpoint that returns a JSON representation of Experience records.
+    Supports optional filtering by title using the 'title' GET parameter.
+    Results are ordered by descending 'started_at' date.
+
+    Returns:
+        JsonResponse: A list of dictionaries containing the serialized 
+        fields and primary keys for each experience entry.
+    """
     title_query = request.GET.get("title", "").strip()
     experiences = Experience.objects.all().order_by('-started_at')
     
@@ -179,6 +188,17 @@ def update_blog(request, blog_id):
     return render(request, "forms/blog_form.html", context)
 
 def get_blogs_json(request):
+    """
+    API endpoint that returns a JSON representation of BlogPost records.
+    Supports optional filtering by title using the 'title' GET parameter.
+    Prefetches the 'starred_by' field to optimize database queries, 
+    preventing N+1 query problems when calculating star counts.
+
+    Returns:
+        JsonResponse: A list of serialized blog objects, including 
+        metadata such as total stars and whether the current logged-in 
+        user has starred the post.
+    """
     title_query = request.GET.get("title", "").strip()
     blogs = BlogPost.objects.prefetch_related('starred_by').all().order_by('-date_posted')
     
@@ -257,6 +277,16 @@ def update_project(request, project_id):
     return render(request, "forms/projects_form.html", context)
 
 def get_projects_json(request):
+    """
+    API endpoint that returns a JSON representation of all Project records.
+    Supports filtering by title using the 'title' GET parameter.
+    Uses 'prefetch_related' on 'starred_by' to efficiently bulk-load 
+    many-to-many relationship data for star calculations.
+
+    Returns:
+        JsonResponse: A list of project objects with their core fields, 
+        plus calculated 'star_count' and 'is_starred' metadata.
+    """
     title_query = request.GET.get("title", "").strip()
     projects = Project.objects.prefetch_related('starred_by').all()
 
@@ -356,6 +386,21 @@ def toggle_star_blog(request, blog_id):
 
 @require_POST
 def create_project_ajax(request):
+    """
+    Asynchronously creates a new Project entry via an AJAX POST request.
+    
+    Security:
+        - Requires POST method via @require_POST.
+        - Verifies that the user has the 'main.add_project' permission.
+    
+    Processing:
+        - Validates the incoming POST data using ProjectForm.
+        - On success, saves the record and returns HTTP 201 Created.
+        - On failure, returns HTTP 400 Bad Request with a JSON map of errors.
+
+    Returns:
+        JsonResponse: Contains a success message and primary key, or error details.
+    """
     if not request.user.has_perm('main.add_project'):
         return JsonResponse(
             {"message": "Only the portfolio owner can add projects."},
@@ -374,6 +419,17 @@ def create_project_ajax(request):
 
 @require_POST
 def create_blog_ajax(request):
+    """
+    Asynchronously creates a new BlogPost entry via an AJAX POST request.
+    
+    Security:
+        - Strict check for POST method and 'main.add_blogpost' permission.
+    
+    Returns:
+        JsonResponse (201): If form is valid, returns the new post's PK.
+        JsonResponse (400): If form is invalid, returns validation errors.
+        JsonResponse (403): If the user lacks permission.
+    """
     if not request.user.has_perm('main.add_blogpost'):
         return JsonResponse(
             {"message": "Only the portfolio owner can add blog posts."},
@@ -392,6 +448,17 @@ def create_blog_ajax(request):
 
 @require_POST
 def create_experience_ajax(request):
+    """
+    Asynchronously creates a new Experience entry via an AJAX POST request.
+    
+    Security:
+        - Enforces POST method using @require_POST.
+        - Validates user role via 'main.add_experience' permission.
+    
+    Returns:
+        JsonResponse: A status 201 with the created object's ID, or 
+        status 400/403 with descriptive error messages.
+    """
     if not request.user.has_perm('main.add_experience'):
         return JsonResponse(
             {"message": "Only the portfolio owner can add experience."},
