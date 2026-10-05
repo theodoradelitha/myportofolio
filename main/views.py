@@ -135,16 +135,11 @@ def show_projects(request):
 #     return render(request, "components/projects.html", context)
 
 def show_blog(request):
-    json_response = get_blogs_json(request)
-
-    blog_list = serializers.deserialize(
-        "json",
-        json_response.content.decode("utf-8"),
-    )
-    blog_list = [blog.object for blog in blog_list]
+    title_query = request.GET.get("title", "").strip()
 
     context = {
-        'blog_list': blog_list,
+        "title_query": title_query,
+        "form": BlogForm(),
     }
     return render(request, "components/blog.html", context)
 
@@ -183,11 +178,33 @@ def update_blog(request, blog_id):
     return render(request, "forms/blog_form.html", context)
 
 def get_blogs_json(request):
-    blogs = BlogPost.objects.all().order_by('-date_posted')
-    blogs_json = serializers.serialize(
-        "json", blogs, use_natural_foreign_keys=True
-    )
-    return HttpResponse(blogs_json, content_type="application/json")
+    title_query = request.GET.get("title", "").strip()
+    blogs = BlogPost.objects.prefetch_related('starred_by').all().order_by('-date_posted')
+    
+    if title_query:
+        blogs = blogs.filter(title__icontains=title_query)
+
+    data = []
+    for blog in blogs:
+        starred_users = blog.starred_by.all()
+        is_starred = request.user in starred_users if request.user.is_authenticated else False
+        starred_by_names = ", ".join([u.username for u in starred_users])
+
+        data.append({
+            "pk": str(blog.id),
+            "fields": {
+                "title": blog.title,
+                "content": blog.content,
+                "snippet": blog.snippet,
+                "date_posted": blog.date_posted.strftime('%b. %d, %Y'),
+                "read_time": blog.read_time,
+                "star_count": starred_users.count(),
+                "is_starred": is_starred,
+                "starred_by_names": starred_by_names,
+            }
+        })
+
+    return JsonResponse(data, safe=False)
 
 @login_required(login_url="/login/") 
 def delete_blog(request, blog_id):
@@ -349,6 +366,24 @@ def create_project_ajax(request):
         project = form.save()
         return JsonResponse(
             {"message": "Project added successfully.", "pk": str(project.id)},
+            status=201,
+        )
+
+    return JsonResponse({"errors": form.errors.get_json_data()}, status=400)
+
+@require_POST
+def create_blog_ajax(request):
+    if not request.user.has_perm('main.add_blogpost'):
+        return JsonResponse(
+            {"message": "Only the portfolio owner can add blog posts."},
+            status=403,
+        )
+
+    form = BlogForm(request.POST)
+    if form.is_valid():
+        blog = form.save()
+        return JsonResponse(
+            {"message": "Blog post added successfully.", "pk": str(blog.id)},
             status=201,
         )
 
