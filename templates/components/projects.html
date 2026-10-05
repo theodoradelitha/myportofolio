@@ -245,6 +245,11 @@
             const projectData = await response.json();
 
             if (projectData.length === 0) {
+                if (searchQuery) {
+                    emptyState.innerHTML = `<p>No projects found matching "${escapeHtml(searchQuery)}".</p>`;
+                } else {
+                    emptyState.innerHTML = `<p>No projects have been added yet.</p>`;
+                }
                 displayPageSection({ showEmpty: true });
             } else {
                 if (gridContainer) gridContainer.innerHTML = '';
