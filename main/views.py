@@ -28,22 +28,11 @@ def show_main(request):
     return render(request, "index.html", context)
 
 def show_experience(request):
-    """
-    Renders the Experience section of the portfolio.
-    Fetches experience data by internally calling the JSON API endpoint
-    and deserializing the response into Django model instances.
-    """
-    json_response = get_experience_json(request)
-
-    experience_list = serializers.deserialize(
-        "json",
-        json_response.content.decode("utf-8"),
-    )
-    experience_list = [exp.object for exp in experience_list]
+    title_query = request.GET.get("title", "").strip()
 
     context = {
-        "name": "Delitha Theodora",
-        "experience_list": experience_list,
+        "title_query": title_query,
+        "form": ExperienceForm(),
     }
     return render(request, "components/experience.html", context)
 
@@ -91,13 +80,25 @@ def update_experience(request, exp_id):
     return render(request, "forms/experience_form.html", context)
 
 def get_experience_json(request):
-    """
-    API endpoint that returns all Experience records in JSON format,
-    ordered by their creation date (newest first).
-    """
+    title_query = request.GET.get("title", "").strip()
     experiences = Experience.objects.all().order_by('-started_at')
-    experiences_json = serializers.serialize("json", experiences)
-    return HttpResponse(experiences_json, content_type="application/json")
+    
+    if title_query:
+        experiences = experiences.filter(title__icontains=title_query)
+
+    data = []
+    for exp in experiences:
+        data.append({
+            "pk": str(exp.id),
+            "fields": {
+                "title": exp.title,
+                "description": exp.description,
+                "category_display": exp.get_category_display(),
+                "thumbnail": exp.thumbnail,
+                "is_ongoing": exp.is_ongoing,
+            }
+        })
+    return JsonResponse(data, safe=False)
 
 @login_required(login_url="/login/") 
 def delete_experience(request, exp_id):
@@ -384,6 +385,24 @@ def create_blog_ajax(request):
         blog = form.save()
         return JsonResponse(
             {"message": "Blog post added successfully.", "pk": str(blog.id)},
+            status=201,
+        )
+
+    return JsonResponse({"errors": form.errors.get_json_data()}, status=400)
+
+@require_POST
+def create_experience_ajax(request):
+    if not request.user.has_perm('main.add_experience'):
+        return JsonResponse(
+            {"message": "Only the portfolio owner can add experience."},
+            status=403,
+        )
+
+    form = ExperienceForm(request.POST)
+    if form.is_valid():
+        experience = form.save()
+        return JsonResponse(
+            {"message": "Experience added successfully.", "pk": str(experience.id)},
             status=201,
         )
 
