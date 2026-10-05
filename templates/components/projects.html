@@ -47,8 +47,14 @@
             <!-- Folder Content -->
             <div class="folder-content">
                 <!-- Loading State -->
-                <div id="loading" class="empty-state hide">
-                    <p>Loading projects...</p>
+                <div id="loading" class="empty-state hide" style="display: flex; flex-direction: column; gap: 20px; align-items: stretch;">
+                    <div class="project-card" style="box-shadow: none; border: 1px solid var(--cream-soft); width: 100%; max-width: none;">
+                        <div class="skeleton skeleton-title" style="width: 40%;"></div>
+                        <div class="skeleton skeleton-image"></div>
+                        <div class="skeleton skeleton-text"></div>
+                        <div class="skeleton skeleton-text"></div>
+                        <div class="skeleton skeleton-text short"></div>
+                    </div>
                 </div>
 
                 <!-- Error State -->
