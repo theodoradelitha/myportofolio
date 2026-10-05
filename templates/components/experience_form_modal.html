@@ -1,0 +1,32 @@
+<div id="add-experience-modal" popover class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Add New Experience</h3>
+            <button type="button" class="close-button" popovertarget="add-experience-modal"
+                popovertargetaction="hide">&times;</button>
+        </div>
+        <div class="modal-body">
+            <form id="experience-form" method="post" action="{% url 'main:create_experience_ajax' %}">
+                {% csrf_token %}
+
+                {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                    <div class="form-error">
+                        {{ field.errors.0 }}
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+
+                <div class="form-actions">
+                    <button type="button" class="button button-secondary" popovertarget="add-experience-modal"
+                        popovertargetaction="hide">Cancel</button>
+                    <button type="submit" class="button">Save Experience</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
