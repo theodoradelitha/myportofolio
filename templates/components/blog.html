@@ -159,6 +159,11 @@
             const blogData = await response.json();
 
             if (blogData.length === 0) {
+                if (searchQuery) {
+                    blogEmptyState.innerHTML = `<p>No posts found matching "${escapeHtml(searchQuery)}".</p>`;
+                } else {
+                    blogEmptyState.innerHTML = `<p>No posts yet. I'm currently writing my first one!</p>`;
+                }
                 displayBlogSection({ showEmpty: true });
             } else {
                 if (blogGridContainer) blogGridContainer.innerHTML = '';
