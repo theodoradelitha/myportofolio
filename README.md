@@ -203,3 +203,45 @@ For this assignment, my prompt strategy shifted towards architecture and access 
 * *how do i check if a user is logged in inside my html file so i can hide the star button for guests?*
 * *Test Unauthenticated Visitor: Try to open /projects/add/ but i get a 403 forbidden instead of a redirect. am i actually still logged in?*
 * *my api is showing [1, 2] for starred_by, how do i make it show the actual usernames instead in get_projects_json?*
+
+---
+
+### Weekly Progress Update (Week 5 / Assignment 5)
+* **Week 5 (Assignment 5):** Refactored the application to use asynchronous JavaScript (AJAX). Replaced standard page loads with `fetch()` API calls to retrieve JSON data from the backend. Implemented interactive, non-blocking UI states (loading skeletons, empty states, error handling) and debounced search fields across all major sections (Projects, Blog, Experience). Transitioned form submissions into Popover Modals using AJAX POST requests with strict CSRF token headers and DOM-based XSS sanitization.
+
+---
+
+### Assignment 5
+
+1. **Explain what debouncing is and why this technique is important to implement in a search feature that uses AJAX.**
+   Debouncing is a programming practice used to ensure that time-consuming tasks do not fire so often that they stall the performance of the application. In a search feature using AJAX, if debouncing is not used, an HTTP request would be fired to the server for every single keystroke. This would flood the server with unnecessary requests and cause severe performance issues. By using debouncing (e.g., waiting 500ms after the user stops typing), we drastically reduce server load and ensure only the final, meaningful search term is sent.
+
+2. **Explain the purpose of using `await` when we use `fetch()`. What would happen if we did not use `await`?**
+   `fetch()` is an asynchronous JavaScript function that returns a Promise. The `await` keyword pauses the execution of the `async` function until that Promise is resolved (meaning the server has fully responded). If we did not use `await`, the code would continue executing immediately before the data was actually retrieved from the server. This would result in variables holding unresolved Promise objects instead of the actual JSON data, which would break the DOM rendering logic and result in undefined content on the screen.
+
+3. **Explain what a Cross-Site Scripting (XSS) attack is and why data displayed through AJAX/JavaScript is more vulnerable to this attack than data displayed directly through a Django template.**
+   Cross-Site Scripting (XSS) is a security vulnerability where an attacker injects malicious scripts (like JavaScript) into trusted websites (e.g., typing a `<script>` tag into a Blog's content field). 
+   When data is displayed directly through a Django template using `{{ variable }}`, Django's template engine automatically escapes special characters by default (converting `<` to `&lt;`), preventing scripts from running. However, when data is fetched via AJAX and manually inserted into the DOM using JavaScript (especially using properties like `innerHTML`), the browser will execute any unescaped scripts contained in that data. This makes AJAX heavily reliant on explicit manual escaping (like building a custom `escapeHtml()` function) and strict server-side sanitization (like Django's `strip_tags()`) to stay secure.
+
+<br>
+
+### AI Disclosure & Reflection (Assignment 5)
+
+**1. Tools Used:** Gemini
+
+**2. Prompting Strategy:**
+For this assignment, my prompt strategy was strictly focused on understanding asynchronous JavaScript flow and security protocols. Instead of asking for entire template rewrites, I isolated my questions to specific mechanisms, such as how to securely pass CSRF tokens via headers in a `fetch()` request, or how JavaScript handles Promises differently than synchronous Python code.
+
+**3. Specific Assisted Parts:**
+* **AJAX Setup & CSRF:** I used the AI to help me understand how to extract the CSRF token from browser cookies and attach it correctly to the `X-CSRFToken` header of my POST requests.
+* **Debouncing Logic:** I consulted the AI to explain the mechanics of `setTimeout` and `clearTimeout` to build a clean debouncer for my search bars.
+* **UI/UX Enhancements:** I utilized the AI to help me generate the CSS keyframes (`@keyframes`) and `linear-gradient` logic required to build the advanced shimmering Skeleton Loading animation that I implemented for my loading states.
+
+**4. Critical Analysis of AI Limitations & Manual Fixes:**
+* **DOM Target Hallucinations:** The AI often provided generic JavaScript that didn't match the specific IDs and class names in my existing HTML structure. I could not copy-paste its DOM manipulation code; I had to manually rewrite its `document.getElementById` and `.innerHTML` logic to target my specific containers and ensure my loading, error, and empty states toggled correctly.
+
+**5. Prompting History/Log:**
+* *why is my fetch POST returning a 403 forbidden error when i try to add a project?*
+* *what is the best way to clear the form inputs inside my modal after a successful AJAX submission?*
+* *i want to make a skeleton loading animation in css, how does the linear-gradient shimmer effect work?*
+* *my debounced search is working, but it keeps showing "no projects added yet" when my search just didn't find anything. how do I make it say "no projects found matching X"?*
