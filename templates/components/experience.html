@@ -8,7 +8,7 @@
             <p class="section-kicker">My journey so far</p>
             <div class="blog-header-controls">
                 <h1 style="margin-bottom: 0;">Experience</h1>
-                
+
                 <div class="project-controls-row">
                     <form id="exp-search-form" class="project-search">
                         <input type="search" id="exp-search-input" name="title" value="{{ title_query }}"
@@ -27,8 +27,14 @@
 
             <div class="experience-grid-wrapper" style="min-height: 200px; position: relative;">
                 <!-- Loading State -->
-                <div id="exp-loading" class="empty-state hide">
-                    <p>Loading experiences...</p>
+                <div id="exp-loading" class="empty-state hide" style="display: flex; flex-direction: column; gap: 20px; align-items: stretch; text-align: left;">
+                    <article class="experience-card" style="box-shadow: none; border: 1px solid var(--cream-soft);">
+                        <div class="skeleton skeleton-text short" style="width: 20%; height: 20px;"></div>
+                        <div class="skeleton skeleton-title" style="width: 40%;"></div>
+                        <div class="skeleton skeleton-text"></div>
+                        <div class="skeleton skeleton-text"></div>
+                        <div class="skeleton skeleton-text short" style="margin-bottom: 20px;"></div>
+                    </article>
                 </div>
 
                 <!-- Error State -->
