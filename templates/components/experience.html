@@ -138,6 +138,11 @@
             const expData = await response.json();
 
             if (expData.length === 0) {
+                if (searchQuery) {
+                    expEmptyState.innerHTML = `<p>No experience found matching "${escapeHtml(searchQuery)}".</p>`;
+                } else {
+                    expEmptyState.innerHTML = `<p>No experience has been added yet.</p>`;
+                }
                 displayExpSection({ showEmpty: true });
             } else {
                 if (expGridContainer) expGridContainer.innerHTML = '';
