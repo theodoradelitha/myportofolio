@@ -2,7 +2,6 @@
 {% load static %}
 
 {% block content %}
-<main>
     <section class="experience-section" id="experience">
         <div class="container">
             <p class="section-kicker">My journey so far</p>
@@ -53,7 +52,6 @@
             </div>
         </div>
     </section>
-</main>
 
 {% if perms.main.add_experience %}
 {% include "components/experience_form_modal.html" %}
