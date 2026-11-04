@@ -245,3 +245,23 @@ For this assignment, my prompt strategy was strictly focused on understanding as
 * *what is the best way to clear the form inputs inside my modal after a successful AJAX submission?*
 * *i want to make a skeleton loading animation in css, how does the linear-gradient shimmer effect work?*
 * *my debounced search is working, but it keeps showing "no projects added yet" when my search just didn't find anything. how do I make it say "no projects found matching X"?*
+
+---
+
+### Tutorial 07: DRF API
+The Projects page now loads and changes data through a Django REST Framework API instead of the hand-built `JsonResponse` views. The code lives in `main/serializers.py`, `main/permissions.py`, `main/api_views.py` and `main/api_urls.py`, and the tests are in `main/tests_api.py`.
+
+| Method | Endpoint | Action | Who can do it |
+|---|---|---|---|
+| GET | `/api/v1/projects/` | List projects, `?title=...` to search | Everyone |
+| POST | `/api/v1/projects/` | Add a project | Superuser |
+| GET | `/api/v1/projects/<uuid>/` | Project detail | Everyone |
+| PUT / PATCH | `/api/v1/projects/<uuid>/` | Update a project | Superuser |
+| DELETE | `/api/v1/projects/<uuid>/` | Delete a project | Superuser |
+| POST | `/api/v1/projects/<uuid>/star/` | Star / unstar | Logged-in users |
+
+* Requests are authenticated with the normal login session (`SessionAuthentication`), so writes from the browser need the `X-CSRFToken` header.
+* The Editor group can't write through this API, but it can still add, edit and delete projects through the existing HTML pages (`/projects/add/`, `/projects/<uuid>/update/`, `/projects/<uuid>/delete/`).
+* The old `/api/projects/` and `/projects/add-ajax/` endpoints are still there for now.
+
+Run the tests with `python manage.py test main`.
