@@ -36,11 +36,16 @@ class MainTest(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "components/experience.html")
-        self.assertContains(response, self.experience.title)
-        self.assertContains(response, self.experience.description)
-        self.assertContains(response, "Part-Time")
-        self.assertContains(response, "Ongoing")
+        self.assertContains(response, reverse("main:get_experience_json"))
         self.assertContains(response, f'href="{reverse("main:show_main")}"')
+
+        # The cards are rendered by JavaScript from this JSON endpoint
+        data = self.client.get(reverse("main:get_experience_json")).json()
+        self.assertEqual(len(data), 1)
+        self.assertEqual(data[0]["fields"]["title"], self.experience.title)
+        self.assertEqual(data[0]["fields"]["description"], self.experience.description)
+        self.assertEqual(data[0]["fields"]["category_display"], "Part-Time")
+        self.assertTrue(data[0]["fields"]["is_ongoing"])
 
     def test_empty_experience_page(self):
         Experience.objects.all().delete()
@@ -51,11 +56,11 @@ class MainTest(TestCase):
     def test_completed_experience(self):
         self.experience.ended_at = timezone.now()
         self.experience.save()
-        response = self.client.get(reverse("main:show_experience"))
+        data = self.client.get(reverse("main:get_experience_json")).json()
 
         self.assertFalse(self.experience.is_ongoing)
-        self.assertContains(response, "Completed")
-        self.assertNotContains(response, "Ongoing")
+        self.assertEqual(data[0]["pk"], str(self.experience.id))
+        self.assertFalse(data[0]["fields"]["is_ongoing"])
 
 class ProjectTests(TestCase):
     def setUp(self):
@@ -73,8 +78,11 @@ class ProjectTests(TestCase):
             tech_stack="Django, SQLite"
         )
         response = self.client.get(reverse('main:show_projects'))
-        self.assertContains(response, "Test Project 123")
-        self.assertContains(response, "Django, SQLite")
+        self.assertContains(response, reverse('main:get_projects_json'))
+
+        data = self.client.get(reverse('main:get_projects_json')).json()
+        self.assertEqual(data[0]["fields"]["title"], "Test Project 123")
+        self.assertEqual(data[0]["fields"]["tech_stack"], "Django, SQLite")
 
     def test_empty_message_appears_when_data_is_empty(self):
         response = self.client.get(reverse('main:show_projects'))
@@ -95,8 +103,11 @@ class BlogPostTests(TestCase):
             read_time=5
         )
         response = self.client.get(reverse('main:show_blog'))
-        self.assertContains(response, "Test Blog Post")
-        self.assertContains(response, "Testing the blog loop.")
+        self.assertContains(response, reverse('main:get_blogs_json'))
+
+        data = self.client.get(reverse('main:get_blogs_json')).json()
+        self.assertEqual(data[0]["fields"]["title"], "Test Blog Post")
+        self.assertEqual(data[0]["fields"]["content"], "Testing the blog loop.")
 
     def test_empty_message_appears_when_data_is_empty(self):
         # tests that an empty message appears when there is no data
