@@ -29,6 +29,7 @@ def show_experience(request):
     title_query = request.GET.get("title", "").strip()
 
     context = {
+        "name": "Delitha",
         "title_query": title_query,
         "form": ExperienceForm(),
     }
@@ -51,6 +52,7 @@ def create_experience(request):
         return redirect("main:show_experience")
 
     context = {
+        "name": "Delitha",
         "form": form,
     }
     return render(request, "forms/experience_form.html", context)
@@ -72,6 +74,7 @@ def update_experience(request, exp_id):
         return redirect("main:show_experience")
 
     context = {
+        "name": "Delitha",
         "form": form,
         "is_update": True,
     }
@@ -139,6 +142,7 @@ def show_blog(request):
     title_query = request.GET.get("title", "").strip()
 
     context = {
+        "name": "Delitha",
         "title_query": title_query,
         "form": BlogForm(),
     }
@@ -156,6 +160,7 @@ def create_blog(request):
         return redirect("main:show_blog")
 
     context = {
+        "name": "Delitha",
         "form": form,
     }
     return render(request, "forms/blog_form.html", context)
@@ -173,6 +178,7 @@ def update_blog(request, blog_id):
         return redirect("main:show_blog")
 
     context = {
+        "name": "Delitha",
         "form": form,
         "is_update": True,
     }
