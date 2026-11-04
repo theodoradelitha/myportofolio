@@ -1,12 +1,10 @@
 from django.views.decorators.http import require_POST
-from django.shortcuts import render, redirect
 from main.forms import ProjectForm, BlogForm, ExperienceForm
 from main.models import Experience, Project, BlogPost
 from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
-from django.core import serializers
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 import datetime
 from django.contrib.auth.decorators import login_required
@@ -136,13 +134,6 @@ def show_projects(request):
         "form": ProjectForm(),
     }
     return render(request, "components/projects.html", context)
-
-# def show_projects(request):
-#     context = {
-#         "name": "Delitha Theodora",
-#         "projects_list": Project.objects.all(),
-#     }
-#     return render(request, "components/projects.html", context)
 
 def show_blog(request):
     title_query = request.GET.get("title", "").strip()
