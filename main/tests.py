@@ -78,11 +78,11 @@ class ProjectTests(TestCase):
             tech_stack="Django, SQLite"
         )
         response = self.client.get(reverse('main:show_projects'))
-        self.assertContains(response, reverse('main:get_projects_json'))
+        self.assertContains(response, reverse('api:project-list'))
 
-        data = self.client.get(reverse('main:get_projects_json')).json()
-        self.assertEqual(data[0]["fields"]["title"], "Test Project 123")
-        self.assertEqual(data[0]["fields"]["tech_stack"], "Django, SQLite")
+        data = self.client.get(reverse('api:project-list')).json()
+        self.assertEqual(data[0]["title"], "Test Project 123")
+        self.assertEqual(data[0]["tech_stack"], "Django, SQLite")
 
     def test_empty_message_appears_when_data_is_empty(self):
         response = self.client.get(reverse('main:show_projects'))
