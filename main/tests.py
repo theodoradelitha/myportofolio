@@ -103,11 +103,11 @@ class BlogPostTests(TestCase):
             read_time=5
         )
         response = self.client.get(reverse('main:show_blog'))
-        self.assertContains(response, reverse('main:get_blogs_json'))
+        self.assertContains(response, reverse('api:blog-list'))
 
-        data = self.client.get(reverse('main:get_blogs_json')).json()
-        self.assertEqual(data[0]["fields"]["title"], "Test Blog Post")
-        self.assertEqual(data[0]["fields"]["content"], "Testing the blog loop.")
+        data = self.client.get(reverse('api:blog-list')).json()
+        self.assertEqual(data[0]["title"], "Test Blog Post")
+        self.assertEqual(data[0]["content"], "Testing the blog loop.")
 
     def test_empty_message_appears_when_data_is_empty(self):
         # tests that an empty message appears when there is no data
