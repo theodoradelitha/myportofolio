@@ -205,6 +205,13 @@
     --maroon-oxblood: #5E0F1A;
     --maroon-dark-burgundy: #3B0A12;
 
+    /* === roles used across components (aliases of the palette above) === */
+    --accent: var(--maroon-vintage-burgundy);
+    --accent-dark: var(--maroon-main);
+    --line: var(--cream-dark);
+    --text-muted: var(--maroon-muted);
+    --radius: 8px;
+
     /* === Typography === */
     --font-heading: 'Butler', serif;
     --font-body: 'TT Chocolates', sans-serif;
