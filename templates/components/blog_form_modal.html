@@ -1,32 +1,27 @@
-<div id="add-blog-modal" popover class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3>Add New Blog Post</h3>
-            <button type="button" class="close-button" popovertarget="add-blog-modal"
-                popovertargetaction="hide">&times;</button>
-        </div>
-        <div class="modal-body">
-            <form id="blog-form" method="post" action="{% url 'main:create_blog_ajax' %}">
-                {% csrf_token %}
+<div id="add-blog-modal" class="project-form-modal" popover="auto" role="dialog" aria-modal="true"
+    aria-labelledby="add-blog-modal-title">
+    <button type="button" class="project-form-modal__backdrop" popovertarget="add-blog-modal"
+        popovertargetaction="hide" aria-label="Close blog post form"></button>
 
-                {% for field in form %}
-                <div class="form-group">
-                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                    {{ field }}
-                    {% if field.errors %}
-                    <div class="form-error">
-                        {{ field.errors.0 }}
-                    </div>
-                    {% endif %}
-                </div>
-                {% endfor %}
+    <div class="project-form-modal__content">
+        <button type="button" class="project-form-modal__close" popovertarget="add-blog-modal"
+            popovertargetaction="hide" aria-label="Close blog post form">×</button>
 
-                <div class="form-actions">
-                    <button type="button" class="button button-secondary" popovertarget="add-blog-modal"
-                        popovertargetaction="hide">Cancel</button>
-                    <button type="submit" class="button">Save Post</button>
-                </div>
-            </form>
-        </div>
+        <h2 id="add-blog-modal-title">Add New Blog Post</h2>
+        <form id="blog-form" method="post" action="{% url 'main:create_blog' %}" class="project-form">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                <p class="form-error hide" data-error-for="{{ field.name }}"></p>
+            </div>
+            {% endfor %}
+            <div class="project-form-modal__actions">
+                <button type="button" class="button button-secondary" popovertarget="add-blog-modal"
+                    popovertargetaction="hide">Cancel</button>
+                <button type="submit" class="button">Save Post</button>
+            </div>
+        </form>
     </div>
 </div>
