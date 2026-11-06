@@ -150,7 +150,8 @@ def show_blog(request):
 
 @login_required(login_url="/login/")
 def create_blog(request):
-    if not request.user.has_perm('main.add_blogpost'):
+    # Assignment 6 roles: only the portfolio owner adds blog posts
+    if not request.user.is_superuser:
         raise PermissionDenied
     form = BlogForm(request.POST or None)
 
@@ -226,7 +227,8 @@ def get_blogs_json(request):
 
 @login_required(login_url="/login/") 
 def delete_blog(request, blog_id):
-    if not request.user.has_perm('main.delete_blogpost'):
+    # Assignment 6 roles: only the portfolio owner deletes blog posts
+    if not request.user.is_superuser:
         raise PermissionDenied
     blog = get_object_or_404(BlogPost, pk=blog_id)
 
@@ -420,14 +422,15 @@ def create_blog_ajax(request):
     Asynchronously creates a new BlogPost entry via an AJAX POST request.
     
     Security:
-        - Strict check for POST method and 'main.add_blogpost' permission.
+        - Strict check for POST method; only the superuser (portfolio owner) may add.
     
     Returns:
         JsonResponse (201): If form is valid, returns the new post's PK.
         JsonResponse (400): If form is invalid, returns validation errors.
         JsonResponse (403): If the user lacks permission.
     """
-    if not request.user.has_perm('main.add_blogpost'):
+    # Assignment 6 roles: only the portfolio owner adds blog posts
+    if not request.user.is_superuser:
         return JsonResponse(
             {"message": "Only the portfolio owner can add blog posts."},
             status=403,
