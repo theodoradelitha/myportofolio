@@ -1755,11 +1755,11 @@ h3 {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    background: var(--ink);
+    background: var(--maroon-main);
 }
 
 .button-star.is-starred {
-    background: var(--accent);
+    background: var(--maroon-vintage-burgundy);
 }
 
 .star-count {
