@@ -308,10 +308,12 @@
         try {
             const payload = readBlogForm();
             if (editingBlog) {
-                // PATCH sends only the fields that changed
+                // PATCH sends only the fields that changed. A textarea turns \r\n into \n,
+                // so line endings are normalised before comparing.
+                const normalise = value => String(value ?? '').replace(/\r\n/g, '\n');
                 const changes = {};
                 BLOG_FIELDS.forEach(name => {
-                    if (String(editingBlog[name]) !== payload[name]) changes[name] = payload[name];
+                    if (normalise(editingBlog[name]) !== normalise(payload[name])) changes[name] = payload[name];
                 });
                 if (Object.keys(changes).length === 0) {
                     closeBlogModal();
