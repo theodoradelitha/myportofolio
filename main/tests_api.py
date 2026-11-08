@@ -1,7 +1,7 @@
 import uuid
 
 from django.contrib.auth.models import Group, Permission, User
-from django.urls import reverse
+from django.urls import NoReverseMatch, reverse
 from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
 
@@ -495,7 +495,6 @@ class BlogHTMLRolesTest(APITestCase):
         self.client.login(username="editor", password="test-password")
         self.assertEqual(self.client.get(reverse("main:create_blog")).status_code, 403)
         self.assertEqual(self.client.post(reverse("main:create_blog"), self.form_data).status_code, 403)
-        self.assertEqual(self.client.post(reverse("main:create_blog_ajax"), self.form_data).status_code, 403)
         response = self.client.post(reverse("main:delete_blog", args=[self.blog.id]))
         self.assertEqual(response.status_code, 403)
         self.assertEqual(list(BlogPost.objects.values_list("title", flat=True)), ["Recap"])
@@ -511,11 +510,22 @@ class BlogHTMLRolesTest(APITestCase):
 
     def test_owner_can_create_and_delete_through_html_views(self):
         self.client.login(username="owner", password="test-password")
-        response = self.client.post(reverse("main:create_blog_ajax"), self.form_data)
-        self.assertEqual(response.status_code, 201)
+        response = self.client.post(reverse("main:create_blog"), self.form_data)
+        self.assertRedirects(response, reverse("main:show_blog"))
         response = self.client.post(reverse("main:delete_blog", args=[self.blog.id]))
         self.assertRedirects(response, reverse("main:show_blog"))
         self.assertEqual(list(BlogPost.objects.values_list("title", flat=True)), ["Added"])
+
+    def test_removed_blog_endpoints_are_gone(self):
+        # The DRF endpoints under /api/v1/blog/ replace these
+        for name, args in [("get_blogs_json", []), ("create_blog_ajax", []),
+                           ("toggle_star_blog", [self.blog.id])]:
+            with self.assertRaises(NoReverseMatch):
+                reverse(f"main:{name}", args=args)
+        self.client.login(username="owner", password="test-password")
+        self.assertEqual(self.client.get("/api/blog/").status_code, 404)
+        self.assertEqual(self.client.post("/blog/add-ajax/", self.form_data).status_code, 404)
+        self.assertEqual(BlogPost.objects.count(), 1)
 
     def test_blog_page_buttons_match_roles(self):
         self.client.login(username="editor", password="test-password")

@@ -185,46 +185,6 @@ def update_blog(request, blog_id):
     }
     return render(request, "forms/blog_form.html", context)
 
-def get_blogs_json(request):
-    """
-    API endpoint that returns a JSON representation of BlogPost records.
-    Supports optional filtering by title using the 'title' GET parameter.
-    Prefetches the 'starred_by' field to optimize database queries, 
-    preventing N+1 query problems when calculating star counts.
-
-    Returns:
-        JsonResponse: A list of serialized blog objects, including 
-        metadata such as total stars and whether the current logged-in 
-        user has starred the post.
-    """
-    title_query = request.GET.get("title", "").strip()
-    blogs = BlogPost.objects.prefetch_related('starred_by').all().order_by('-date_posted')
-    
-    if title_query:
-        blogs = blogs.filter(title__icontains=title_query)
-
-    data = []
-    for blog in blogs:
-        starred_users = blog.starred_by.all()
-        is_starred = request.user in starred_users if request.user.is_authenticated else False
-        starred_by_names = ", ".join([u.username for u in starred_users])
-
-        data.append({
-            "pk": str(blog.id),
-            "fields": {
-                "title": blog.title,
-                "content": blog.content,
-                "snippet": blog.snippet,
-                "date_posted": blog.date_posted.strftime('%b. %d, %Y'),
-                "read_time": blog.read_time,
-                "star_count": starred_users.count(),
-                "is_starred": is_starred,
-                "starred_by_names": starred_by_names,
-            }
-        })
-
-    return JsonResponse(data, safe=False)
-
 @login_required(login_url="/login/") 
 def delete_blog(request, blog_id):
     # Assignment 6 roles: only the portfolio owner deletes blog posts
@@ -373,16 +333,6 @@ def toggle_star_project(request, project_id):
             project.starred_by.add(request.user)
     return redirect("main:show_projects")
 
-@login_required(login_url="/login/")
-def toggle_star_blog(request, blog_id):
-    blog = get_object_or_404(BlogPost, pk=blog_id)
-    if request.method == "POST":
-        if request.user in blog.starred_by.all():
-            blog.starred_by.remove(request.user)
-        else:
-            blog.starred_by.add(request.user)
-    return redirect("main:show_blog")
-
 @require_POST
 def create_project_ajax(request):
     """
@@ -411,36 +361,6 @@ def create_project_ajax(request):
         project = form.save()
         return JsonResponse(
             {"message": "Project added successfully.", "pk": str(project.id)},
-            status=201,
-        )
-
-    return JsonResponse({"errors": form.errors.get_json_data()}, status=400)
-
-@require_POST
-def create_blog_ajax(request):
-    """
-    Asynchronously creates a new BlogPost entry via an AJAX POST request.
-    
-    Security:
-        - Strict check for POST method; only the superuser (portfolio owner) may add.
-    
-    Returns:
-        JsonResponse (201): If form is valid, returns the new post's PK.
-        JsonResponse (400): If form is invalid, returns validation errors.
-        JsonResponse (403): If the user lacks permission.
-    """
-    # Assignment 6 roles: only the portfolio owner adds blog posts
-    if not request.user.is_superuser:
-        return JsonResponse(
-            {"message": "Only the portfolio owner can add blog posts."},
-            status=403,
-        )
-
-    form = BlogForm(request.POST)
-    if form.is_valid():
-        blog = form.save()
-        return JsonResponse(
-            {"message": "Blog post added successfully.", "pk": str(blog.id)},
             status=201,
         )
 
