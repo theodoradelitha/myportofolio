@@ -265,3 +265,111 @@ The Projects page now loads and changes data through a Django REST Framework API
 * The old `/api/projects/` and `/projects/add-ajax/` endpoints are still there for now.
 
 Run the tests with `python manage.py test main`.
+
+---
+
+### Weekly Progress Update (Assignment 6)
+**Assignment 6:** Implemented a Django REST Framework API for the Blog section by following the pattern from Tutorial 07. I created a `BlogPostSerializer` to handle data conversion and validation, including cleaning HTML tags from user input and checking that the title, content, and reading time meet the requirements. I also added role-based permissions so visitors and regular users can view articles, logged-in users can star them, Editors can create and update articles, and only the portfolio owner can delete them.
+
+I added API endpoints for listing, searching, creating, updating, deleting, and starring blog posts. I also updated the Blog page to use JavaScript `fetch()` requests, allowing users to perform these actions without reloading the page. The add/edit modal supports partial updates, so it only sends the fields that have changed. I included CSRF protection and added tests for permissions, validation, starring, and API behavior across different user roles. I also removed the old Blog endpoints that were replaced by the new DRF API.
+
+---
+
+### Assignment 6
+
+**1. Explain what REST means and why returning JSON alone isn't enough to call an API RESTful. Also explain the difference between PUT and PATCH, with an example of when each should be used.**
+
+REST (Representational State Transfer) is an architectural style for building APIs around resources. Each resource has its own URL, and we use HTTP methods to perform different actions on it, such as GET to retrieve data, POST to create something, PUT or PATCH to update something, and DELETE to remove it.
+
+Returning JSON alone doesn't make an API RESTful. In my previous implementation, I already returned JSON using `get_blogs_json` and `create_blog_ajax`, but the endpoints were still based on specific actions rather than resources. For example, I had a separate `/blog/add-ajax/` endpoint for creating a blog post. In Assignment 6, I changed this to use resource-based URLs:
+
+- `/api/v1/blog/` for retrieving all blog posts or creating a new one.
+- `/api/v1/blog/<uuid>/` for retrieving, updating, or deleting a specific blog post.
+
+The HTTP methods also determine what action is performed, and the API returns appropriate status codes depending on the result.
+
+The difference between PUT and PATCH is that **PUT updates the entire resource**, while **PATCH only updates specific fields**. For example, if I use PUT to update a blog post, I need to send all the required fields, such as its title, content, and read time. If I only send the title, the request will return a 400 error because the other required fields are missing.
+
+Meanwhile, PATCH allows me to update only the fields I want to change. In my project, I use PATCH in the edit modal because users might only want to change the title without having to send the entire blog post again.
+
+**2. Explain the role of a serializer in Django REST Framework. What are its advantages over manually assembling a dictionary with JsonResponse as in Tutorial 05?**
+
+A serializer is used to convert model instances into data that can be sent as JSON, and also to convert incoming data into Python data that Django can validate and save.
+
+In my assignment, I created `BlogPostSerializer` using `ModelSerializer`. Compared to manually creating a dictionary with `JsonResponse` like I did before, using a serializer has several advantages:
+
+- **Less manual work:** I don't have to manually select and put every model field into a dictionary. I can define the fields I want to expose in one place.
+- **Built-in validation:** The serializer can validate incoming data before saving it. I also added custom validation for the title, content, and read time. For example, titles and content cannot be empty or contain only HTML tags.
+- **Read-only fields:** I can specify fields that users should not be able to change, such as the post ID, date posted, and star count. This prevents users from modifying information that should be controlled by the server.
+- **Consistent responses:** The same serializer is used across different API endpoints, so the structure of the returned data stays consistent.
+- **Safer data exposure:** I can control exactly which fields are included in the response. For example, I only expose the usernames of users who starred a post, not their private information.
+
+Overall, serializers make handling and validating data easier compared to manually building dictionaries and handling everything myself with `JsonResponse`.
+
+**3. Explain the difference between authentication and authorization in Django REST Framework. Why must access rights be checked with a permission class on the server, rather than only by hiding a button in the template?**
+
+Authentication is about identifying who the user is, while authorization is about checking what that user is allowed to do.
+
+In my project, I use `SessionAuthentication`, which allows Django REST Framework to identify users based on their existing login sessions. After that, permission classes determine whether they are allowed to perform certain actions.
+
+For example, in my Blog API:
+- Anyone can view blog posts, including visitors who haven't logged in.
+- Only the Editor and superuser can edit blog posts.
+- Only the superuser can create and delete blog posts.
+- Any logged-in user can star a blog post.
+
+I also use different permission classes depending on the endpoint, such as `IsAuthenticated` for the star endpoint.
+
+Checking permissions only in the template is not enough because hiding a button doesn't actually prevent someone from accessing the endpoint. They could still send a request directly using Postman, curl, or the browser console.
+
+That's why permissions need to be checked on the server using a permission class. Even if someone manually sends a DELETE request, the server will still check whether they are allowed to do it. In my tests, I also tried sending requests as different types of users and checked that unauthorized requests returned 403 without changing anything in the database.
+
+**4. Explain why requests that change data still need a CSRF token when an API uses SessionAuthentication. Why isn't a test using force_authenticate enough to prove that CSRF protection works?**
+
+When using `SessionAuthentication`, Django identifies the user through their session cookie. The problem is that browsers automatically send session cookies with requests to the website. This means that if a user is logged in, another website could potentially trick their browser into sending an unwanted request using that same session.
+
+This is where CSRF protection comes in. A CSRF token helps verify that the request actually comes from our application. In my project, I send the token through the `X-CSRFToken` header whenever I make a request that changes data, such as POST, PUT, PATCH, or DELETE. I retrieve the token from the browser's cookies using `getCookie('csrftoken')`.
+
+As for testing, `force_authenticate` is not enough because it directly assigns a user to the request without going through the normal authentication process. This means it skips the CSRF checks that happen with `SessionAuthentication`.
+
+To properly test CSRF protection, I use `APIClient(enforce_csrf_checks=True)` together with `client.login()`. This allows the test to use an actual session and enforce CSRF checks. I then test requests both without and with a valid CSRF token to make sure that requests without one are rejected with a 403 response, while valid requests are accepted.
+
+### AI Disclosure & Reflection (Assignment 6)
+
+**1. Tools Used:** Claude (Claude Code)
+
+**2. Prompting Strategy:**
+
+For this assignment, my prompting strategy focused on understanding how Django REST Framework works and how its components interact when building a REST API. Rather than relying on AI to generate an entire implementation without understanding it, I used it to clarify specific concepts, understand the differences between the existing Django implementation and the new DRF approach, and troubleshoot issues during development. I focused particularly on serializers, permission handling, HTTP methods, and integrating API responses with the existing JavaScript frontend.
+
+**3. Specific Assisted Parts:**
+
+- **DRF Serializers & Validation:** I used AI to help me understand how `ModelSerializer` works, how to define explicit fields, and how serializers handle data validation. I also asked for clarification on implementing custom validation methods such as `validate_title()` and `validate_content()`.
+
+- **Authentication & Permissions:** I consulted AI to understand how to implement role-based access using custom DRF permission classes. This included understanding how the portfolio owner, Editor, regular users, and anonymous visitors should interact with the Blog API.
+
+- **API Integration & HTTP Methods:** I used AI to clarify how GET, POST, PUT, PATCH, and DELETE requests work in the context of REST APIs. I also received guidance on connecting the existing Blog page to the new DRF endpoints using JavaScript `fetch()` requests without requiring full page reloads.
+
+- **CSRF Protection:** I asked AI for help understanding how Django's `SessionAuthentication` works with CSRF protection, particularly why write requests need to include the `X-CSRFToken` header and how to test CSRF enforcement.
+
+- **Testing & Debugging:** I used AI to help understand how to structure API tests using `APITestCase`, including testing different user roles, validation errors, response status codes, and database changes after API requests.
+
+**4. Critical Analysis of AI Limitations & Manual Fixes:**
+
+- **Existing Project Context:** AI sometimes suggested implementations based on generic DRF patterns that did not fully account for my existing portfolio structure. I had to consider the existing `BlogPost` model, forms, views, templates, and permission logic before applying suggestions.
+
+- **Permission Logic:** The role requirements were particularly important because the existing Django views had permission checks that did not completely match the assignment's requirements. I needed to examine the existing role configuration and ensure that the API permissions and HTML page visibility followed the intended rules.
+
+- **Frontend Integration:** Generic JavaScript suggestions could not always be applied directly to my existing Blog page. I had to account for the actual HTML structure, existing CSS classes, loading and error states, and the way the page previously handled AJAX requests.
+
+- **Understanding Test Results:** AI assistance helped me identify potential edge cases, but I still needed to examine test results and understand what they meant, especially when checking whether unauthorized requests left the database unchanged and whether the existing Tutorial 07 Projects API continued working correctly.
+
+**5. Prompting History/Log:**
+
+- *what's the difference between a django rest framework serializer and manually returning like a jsonresponse?*
+- *how does modelserializer work, and how can i add custom validation for individual fields?*
+- *how shud i implement a custom permission class for an API with an owner, editor, regular users, and anonymous visitors?*
+- *when shud i use PUT instead of PATCH when updating an existing resource?*
+- *why does SessionAuthentication require a CSRF token for POST, PUT, PATCH, and DELETE requests?*
+- *how can i test API permissions and CSRF protection using APITestCase and APIClient?*
+- *how can i update my existing js frontend to use drf endpoints without reloading the page?*
