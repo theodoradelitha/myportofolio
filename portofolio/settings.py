@@ -42,11 +42,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'main',
     'rest_framework',
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
+    # Placed first so it can add CORS headers to every response, including
+    # the ones WhiteNoise and CommonMiddleware return early.
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -58,6 +63,22 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'portofolio.urls'
+
+REST_FRAMEWORK = {
+    # The mobile app sends "Authorization: Token <key>", while the website
+    # keeps using its session cookie. TokenAuthentication is listed first so
+    # requests without valid credentials get 401 (with a WWW-Authenticate
+    # header) instead of 403.
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+}
+
+# Local development CORS settings for Flutter Web (Chrome).
+# Make sure to limit this on production, e.g.,
+# load CORS_ALLOW_ALL_ORIGINS value from .env set on the deployment environment.
+CORS_ALLOW_ALL_ORIGINS = True
 
 TEMPLATES = [
     {

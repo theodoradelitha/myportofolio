@@ -1,9 +1,7 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import status
-from rest_framework.authentication import SessionAuthentication
-from rest_framework.decorators import (
-    api_view, authentication_classes, permission_classes,
-)
+from rest_framework.authtoken.models import Token
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
@@ -13,9 +11,11 @@ from main.permissions import (
 )
 from main.serializers import BlogPostSerializer, ProjectSerializer
 
+# Authentication for every view below comes from DEFAULT_AUTHENTICATION_CLASSES
+# in settings.py: token auth for the mobile app, session auth for the website.
+
 
 @api_view(["GET", "HEAD", "POST"])
-@authentication_classes([SessionAuthentication])
 @permission_classes([IsPortfolioOwnerOrReadOnly])
 def project_list(request):
     if request.method in ("GET", "HEAD"):
@@ -33,7 +33,6 @@ def project_list(request):
 
 
 @api_view(["GET", "HEAD", "PUT", "PATCH", "DELETE"])
-@authentication_classes([SessionAuthentication])
 @permission_classes([IsPortfolioOwnerOrReadOnly])
 def project_detail(request, project_id):
     project = get_object_or_404(
@@ -58,7 +57,6 @@ def project_detail(request, project_id):
 
 
 @api_view(["POST"])
-@authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
 def project_star(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
@@ -76,7 +74,6 @@ def blog_queryset():
 
 
 @api_view(["GET", "HEAD", "POST"])
-@authentication_classes([SessionAuthentication])
 @permission_classes([IsPortfolioOwnerOrEditorOrReadOnly])
 def blog_list(request):
     if request.method in ("GET", "HEAD"):
@@ -94,7 +91,6 @@ def blog_list(request):
 
 
 @api_view(["GET", "HEAD", "PUT", "PATCH", "DELETE"])
-@authentication_classes([SessionAuthentication])
 @permission_classes([IsPortfolioOwnerOrEditorOrReadOnly])
 def blog_detail(request, blog_id):
     blog = get_object_or_404(blog_queryset(), pk=blog_id)
@@ -117,7 +113,6 @@ def blog_detail(request, blog_id):
 
 
 @api_view(["POST"])
-@authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
 def blog_star(request, blog_id):
     blog = get_object_or_404(BlogPost, pk=blog_id)
@@ -130,3 +125,14 @@ def blog_star(request, blog_id):
     blog = blog_queryset().get(pk=blog.pk)
     serializer = BlogPostSerializer(blog, context={"request": request})
     return Response(serializer.data)
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def api_logout(request):
+    # request.auth is the Token row when the caller used token auth, and None
+    # when they used the website session. Deleting the row revokes the token,
+    # so later requests with it get 401.
+    if isinstance(request.auth, Token):
+        request.auth.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)

@@ -3,6 +3,7 @@ import uuid
 from django.contrib.auth.models import Group, Permission, User
 from django.urls import NoReverseMatch, reverse
 from rest_framework import status
+from rest_framework.authtoken.models import Token
 from rest_framework.test import APIClient, APITestCase
 
 from main.models import BlogPost, Project
@@ -44,11 +45,14 @@ class ProjectAPITest(APITestCase):
         self.assertEqual(self.client.get(url).status_code, status.HTTP_404_NOT_FOUND)
 
     def test_guest_and_visitor_cannot_write(self):
-        for user in (None, self.visitor):
+        # Guests get 401 (not logged in at all); logged-in users without
+        # permission get 403. TokenAuthentication comes first in settings,
+        # so DRF can answer guests with 401 and a WWW-Authenticate header.
+        for user, expected in ((None, 401), (self.visitor, 403)):
             self.client.force_authenticate(user=user)
-            self.assertEqual(self.client.post(self.list_url, self.payload, format="json").status_code, 403)
-            self.assertEqual(self.client.patch(self.detail_url, {"title": "Changed"}, format="json").status_code, 403)
-            self.assertEqual(self.client.delete(self.detail_url).status_code, 403)
+            self.assertEqual(self.client.post(self.list_url, self.payload, format="json").status_code, expected)
+            self.assertEqual(self.client.patch(self.detail_url, {"title": "Changed"}, format="json").status_code, expected)
+            self.assertEqual(self.client.delete(self.detail_url).status_code, expected)
         self.assertEqual(Project.objects.count(), 1)
         self.project.refresh_from_db()
         self.assertEqual(self.project.title, "Portfolio")
@@ -89,7 +93,7 @@ class ProjectAPITest(APITestCase):
         self.assertFalse(Project.objects.filter(pk=self.project.id).exists())
 
     def test_star_requires_login_and_toggles(self):
-        self.assertEqual(self.client.post(self.star_url).status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(self.client.post(self.star_url).status_code, status.HTTP_401_UNAUTHORIZED)
         self.client.force_authenticate(user=self.visitor)
         response = self.client.post(self.star_url)
         self.assertTrue(response.data["is_starred"])
@@ -285,12 +289,15 @@ class BlogPostAPITest(APITestCase):
     # Visitor and regular user: read only
 
     def test_visitor_and_regular_user_cannot_write(self):
-        for user in (None, self.regular):
+        # Guests get 401 (not logged in at all); logged-in users without
+        # permission get 403. TokenAuthentication comes first in settings,
+        # so DRF can answer guests with 401 and a WWW-Authenticate header.
+        for user, expected in ((None, 401), (self.regular, 403)):
             self.client.force_authenticate(user=user)
-            self.assertEqual(self.client.post(self.list_url, self.payload, format="json").status_code, 403)
-            self.assertEqual(self.client.put(self.detail_url, self.payload, format="json").status_code, 403)
-            self.assertEqual(self.client.patch(self.detail_url, {"title": "Hacked"}, format="json").status_code, 403)
-            self.assertEqual(self.client.delete(self.detail_url).status_code, 403)
+            self.assertEqual(self.client.post(self.list_url, self.payload, format="json").status_code, expected)
+            self.assertEqual(self.client.put(self.detail_url, self.payload, format="json").status_code, expected)
+            self.assertEqual(self.client.patch(self.detail_url, {"title": "Hacked"}, format="json").status_code, expected)
+            self.assertEqual(self.client.delete(self.detail_url).status_code, expected)
         self.assertBlogUnchanged()
 
     # Editor: read, star, PUT/PATCH only
@@ -412,7 +419,7 @@ class BlogPostAPITest(APITestCase):
 
     def test_anonymous_cannot_star(self):
         response = self.client.post(self.star_url)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertFalse(self.blog.starred_by.exists())
 
     def test_every_logged_in_role_can_star_and_unstar(self):
@@ -535,3 +542,94 @@ class BlogHTMLRolesTest(APITestCase):
         self.client.login(username="owner", password="test-password")
         page = self.client.get(reverse("main:show_blog"))
         self.assertContains(page, 'id="blog-add-button"')
+
+
+class TokenAuthAPITest(APITestCase):
+    """Token login, logout and token-authenticated writes used by the mobile app."""
+
+    def setUp(self):
+        self.owner = User.objects.create_superuser(
+            username="owner", password="test-password", email="owner@example.com",
+        )
+        self.visitor = User.objects.create_user(username="visitor", password="test-password")
+        self.token_url = reverse("api:token-auth")
+        self.logout_url = reverse("api:logout")
+        self.list_url = reverse("api:project-list")
+        self.payload = {
+            "title": "Mobile project", "description": "Added from Flutter",
+            "tech_stack": "Flutter, Dart", "demo_link": None, "image": "",
+        }
+
+    def obtain_token(self, username="owner", password="test-password"):
+        return self.client.post(
+            self.token_url, {"username": username, "password": password}, format="json",
+        )
+
+    def use_token(self, key):
+        self.client.credentials(HTTP_AUTHORIZATION=f"Token {key}")
+
+    def test_valid_credentials_return_a_token(self):
+        response = self.obtain_token()
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["token"], Token.objects.get(user=self.owner).key)
+
+    def test_wrong_password_returns_400_without_a_token(self):
+        response = self.obtain_token(password="wrong-password")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertNotIn("token", response.data)
+        self.assertFalse(Token.objects.exists())
+
+    def test_public_list_needs_no_token(self):
+        Project.objects.create(title="Portfolio", description="Site", tech_stack="Django")
+        response = self.client.get(self.list_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+
+    def test_owner_token_can_create_project_without_csrf(self):
+        key = self.obtain_token().data["token"]
+        # Token requests carry no session cookie, so no CSRF token is needed.
+        client = APIClient(enforce_csrf_checks=True)
+        client.credentials(HTTP_AUTHORIZATION=f"Token {key}")
+        response = client.post(self.list_url, self.payload, format="json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data["tech_stack"], "Flutter, Dart")
+        self.assertEqual(Project.objects.count(), 1)
+
+    def test_visitor_token_cannot_create_project(self):
+        self.use_token(self.obtain_token(username="visitor").data["token"])
+        response = self.client.post(self.list_url, self.payload, format="json")
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertFalse(Project.objects.exists())
+
+    def test_anonymous_create_returns_401(self):
+        response = self.client.post(self.list_url, self.payload, format="json")
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response["WWW-Authenticate"], "Token")
+        self.assertFalse(Project.objects.exists())
+
+    def test_logout_revokes_the_token(self):
+        key = self.obtain_token().data["token"]
+        self.use_token(key)
+        response = self.client.post(self.logout_url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(response.content, b"")
+        self.assertFalse(Token.objects.filter(key=key).exists())
+
+        # The revoked token is now rejected, even for a public read.
+        response = self.client.post(self.list_url, self.payload, format="json")
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(self.client.get(self.list_url).status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertFalse(Project.objects.exists())
+
+    def test_logout_requires_authentication(self):
+        self.assertEqual(self.client.post(self.logout_url).status_code, status.HTTP_401_UNAUTHORIZED)
+        self.use_token("not-a-real-token")
+        self.assertEqual(self.client.post(self.logout_url).status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_logout_only_accepts_post(self):
+        self.use_token(self.obtain_token().data["token"])
+        self.assertEqual(self.client.get(self.logout_url).status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def test_cors_headers_for_flutter_web(self):
+        response = self.client.get(self.list_url, HTTP_ORIGIN="http://localhost:54321")
+        self.assertEqual(response["Access-Control-Allow-Origin"], "*")
